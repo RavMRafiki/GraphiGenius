@@ -13,6 +13,6 @@ namespace GraphiGenius.MVVM.Model
         public int HourSalary { get; set; }
         public int WorkingHours { get; set; }
         public int? DepartmentId { get; set; }
-        public Department Department { get; set; }
+        public Department? Department { get; set; } 
     }
 }

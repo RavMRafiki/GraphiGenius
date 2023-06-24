@@ -4,9 +4,181 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GraphiGenius"
+        
+        xmlns:vm="clr-namespace:GraphiGenius.MVVM.ViewModel"
+        
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="MainWindow"
+        Height="700"
+        Width="1200" 
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        Background="Transparent"
+        AllowsTransparency="True">
 
-    </Grid>
+    <Window.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="TextAlignment" Value="Center"/>
+        </Style>
+        <Style TargetType="Label">
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="FontSize" Value="19"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+    </Window.Resources>
+
+    <Window.DataContext>
+        <vm:MainViewModel x:Name="viewModel"/>
+    </Window.DataContext>
+    <Border Background="#272537" CornerRadius="20">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="150"/>
+                <ColumnDefinition Width="150"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="100"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" 
+                       Text="GraphiGenius"  VerticalAlignment="Center" 
+                       HorizontalAlignment="Left" Foreground="White" 
+                       FontSize="22" Margin="20,0,0,0"/>
+
+            <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Command="{Binding AddDepartment}" Style="{StaticResource ButtonStyle}">Add Department</Button>
+                <Button Command="{Binding AddEmployee}" Style="{StaticResource ButtonStyle}">Add Employee</Button>
+                <Button Command="{Binding Generate}" Style="{StaticResource ButtonStyle}">Generate</Button>
+
+            </StackPanel>
+            <ListBox Grid.Row="2"
+         HorizontalAlignment="Center"
+         VerticalAlignment="Top"
+         SelectedIndex="{Binding CurrentDepartment, Mode=TwoWay}"
+         Width="150"
+         ItemsSource="{Binding Path=Departments}"
+         Background="Transparent"
+         BorderThickness="0"
+         ItemContainerStyle="{StaticResource ListBoxItemStyle}"
+         >
+                <ListBox.Style>
+                    <Style TargetType="ListBox">
+                        <Style.Triggers>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="BorderThickness" Value="0"/>
+                                <Setter Property="Padding" Value="0"/>
+                                <Setter Property="Background" Value="#272537"/>
+                                <Setter Property="Margin" Value="0"/>
+                                <Setter Property="Foreground" Value="#272537"/>
+                                <Setter Property="BorderBrush" Value="#272537"/>
+                                <Setter Property="Visibility" Value="Hidden"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ListBox.Style>
+            </ListBox>
+            <ListBox Grid.Row="2"
+         HorizontalAlignment="Center"
+         VerticalAlignment="Top"
+         SelectedIndex="{Binding CurrentEmployee, Mode=TwoWay}"
+         Width="150"
+         ItemsSource="{Binding Path=Employees}"
+         Background="Transparent"
+         BorderThickness="0"
+         ItemContainerStyle="{StaticResource ListBoxItemStyle}"
+         >
+                <ListBox.Style>
+                    <Style TargetType="ListBox">
+                        <Style.Triggers>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="BorderThickness" Value="0"/>
+                                <Setter Property="Padding" Value="0"/>
+                                <Setter Property="Background" Value="#272537"/>
+                                <Setter Property="Margin" Value="0"/>
+                                <Setter Property="Foreground" Value="#272537"/>
+                                <Setter Property="BorderBrush" Value="#272537"/>
+                                <Setter Property="Visibility" Value="Hidden"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ListBox.Style>
+            </ListBox>
+            <StackPanel Name="EmployeeEditorWindow" Visibility="Collapsed" Grid.Row="1" Grid.Column="2" Margin="20">
+                <TextBlock VerticalAlignment="Top">
+                    Employee Editor
+                </TextBlock>
+
+                <Label  Foreground="White">Name</Label>
+                <TextBox></TextBox>
+                <Label  Foreground="White">Working Hours</Label>
+                <TextBox PreviewTextInput="PreviewNumericInputMonths">0</TextBox>
+
+            </StackPanel>
+            <StackPanel Name="DepartmentEditor" Visibility="Collapsed" Grid.Row="1" Grid.Column="2" Margin="20">
+                <TextBlock VerticalAlignment="Top">
+                    Department Editor
+                </TextBlock>
+                <Label  Foreground="White">Name</Label>
+                <TextBox></TextBox>
+                <Label  Foreground="White">Working Days</Label>
+                <Grid >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Label Grid.Row="0" Grid.Column="0">Day</Label>
+                    <Label Grid.Row="1" Grid.Column="0">Shifts</Label>
+                    <Label Grid.Row="2" Grid.Column="0">Sh. Length</Label>
+                    <Label Grid.Row="0" Grid.Column="1">Monday</Label>
+                    <TextBox Grid.Row="1" Grid.Column="1" PreviewTextInput="PreviewNumericInputMonths"></TextBox>
+                    <TextBox Grid.Row="2" Grid.Column="1" PreviewTextInput="PreviewNumericInputMonths"></TextBox>
+                    <Label Grid.Row="0" Grid.Column="2">Tuesday</Label>
+                    <TextBox Grid.Row="1" Grid.Column="2" PreviewTextInput="PreviewNumericInputMonths"></TextBox>
+                    <TextBox Grid.Row="2" Grid.Column="2" PreviewTextInput="PreviewNumericInputMonths"></TextBox>
+                    <Label Grid.Row="0" Grid.Column="3">Wednesday</Label>
+                    <TextBox Grid.Row="1" Grid.Column="3" PreviewTextInput="PreviewNumericInputMonths"></TextBox>
+                    <TextBox Grid.Row="2" Grid.Column="3" PreviewTextInput="PreviewNumericInputMonths"></TextBox>
+                    <Label Grid.Row="0" Grid.Column="4">Thursday</Label>
+                    <TextBox Grid.Row="1" Grid.Column="4" PreviewTextInput="PreviewNumericInputMonths"></TextBox>
+                    <TextBox Grid.Row="2" Grid.Column="4" PreviewTextInput="PreviewNumericInputMonths"></TextBox>
+                    <Label Grid.Row="0" Grid.Column="5">Friday</Label>
+                    <TextBox Grid.Row="1" Grid.Column="5" PreviewTextInput="PreviewNumericInputMonths"></TextBox>
+                    <TextBox Grid.Row="2" Grid.Column="5" PreviewTextInput="PreviewNumericInputMonths"></TextBox>
+                    <Label Grid.Row="0" Grid.Column="6">Saturday</Label>
+                    <TextBox Grid.Row="1" Grid.Column="6" PreviewTextInput="PreviewNumericInputMonths"></TextBox>
+                    <TextBox Grid.Row="2" Grid.Column="6" PreviewTextInput="PreviewNumericInputMonths"></TextBox>
+                    <Label Grid.Row="0" Grid.Column="7">Sunday</Label>
+                    <TextBox Grid.Row="1" Grid.Column="7" PreviewTextInput="PreviewNumericInputMonths"></TextBox>
+                    <TextBox Grid.Row="2" Grid.Column="7" PreviewTextInput="PreviewNumericInputMonths"></TextBox>
+                </Grid>
+            </StackPanel>
+            <StackPanel Name="SettingsEditorWindow" Grid.Row="1" Grid.Column="2" Margin="20">
+                <TextBlock VerticalAlignment="Top">
+                    Generator Settings
+                </TextBlock>
+
+                <Label  Foreground="White">Graphic Name</Label>
+                <TextBox></TextBox>
+                <Label  Foreground="White">Month Number</Label>
+                <TextBox PreviewTextInput="PreviewNumericInputMonths"></TextBox>
+
+            </StackPanel>
+        </Grid>
+    </Border>
 </Window>
