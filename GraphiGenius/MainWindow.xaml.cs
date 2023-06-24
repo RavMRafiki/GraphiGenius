@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GraphiGenius.MVVM.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,6 +25,7 @@ namespace GraphiGenius
         public MainWindow()
         {
             InitializeComponent();
+            DataContext = new MainViewModel();
         }
 
         private void PreviewNumericInput(object sender, TextCompositionEventArgs e)
@@ -45,7 +47,62 @@ namespace GraphiGenius
                 e.Handled = false;
             }
         }
-
+        private void PreviewNumericInputMinutes(object sender, TextCompositionEventArgs e)
+        {
+            if (!int.TryParse(((TextBox)sender).Text + e.Text, out int newValue))
+            {
+                e.Handled = true;
+            }
+            else if (newValue < 0 || newValue > 59)
+            {
+                e.Handled = true;
+            }
+            else
+            {
+                e.Handled = false;
+            }
+        }
+        private void PreviewNumericInputHours(object sender, TextCompositionEventArgs e)
+        {
+            if (!int.TryParse(((TextBox)sender).Text + e.Text, out int newValue))
+            {
+                e.Handled = true;
+            }
+            else if (newValue < 0 || newValue > 23)
+            {
+                e.Handled = true;
+            }
+            else
+            {
+                e.Handled = false;
+            }
+        }
+        private void BorderMove(object sender, MouseEventArgs e)
+        {
+            if(e.LeftButton == MouseButtonState.Pressed)
+            {
+                DragMove();
+            }
+        }
+        private void MinimizeClick(object sender, RoutedEventArgs e)
+        {
+            Application.Current.MainWindow.WindowState = WindowState.Minimized;
+        }
+        private void MaximizeClick(object sender, RoutedEventArgs e)
+        {
+            if(Application.Current.MainWindow.WindowState != WindowState.Maximized)
+            {
+                Application.Current.MainWindow.WindowState = WindowState.Maximized;
+            }
+            else
+            {
+                Application.Current.MainWindow.WindowState = WindowState.Normal;
+            }
+        }
+        private void ExitClick(object sender, RoutedEventArgs e)
+        {
+            Application.Current?.MainWindow?.Close();
+        }
 
 
     }

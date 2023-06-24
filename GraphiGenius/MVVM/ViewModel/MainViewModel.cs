@@ -13,7 +13,7 @@ namespace GraphiGenius.MVVM.ViewModel
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-
+        public WindowStateViewModel WindowStateViewModel = new();
         private int currentDepartment = 0;
         public int CurrentDepartment
         {
@@ -110,18 +110,65 @@ namespace GraphiGenius.MVVM.ViewModel
         }
         private void generateGrahic()
         {
-            throw new NotImplementedException();
+            EditSettings = true;
         }
         private void addEmployee()
         {
-            throw new NotImplementedException();
+            EditEmployee = true;
 
         }
         private void addDepartment()
         {
-            throw new NotImplementedException();
+            EditDepartment= true;
 
         }
+        private bool editEmployee = false;
+        public bool EditEmployee
+        {
+            get { return editEmployee; }
+            private set
+            {
+                if (value)
+                {
+                    EditDepartment = false;
+                    EditSettings = false;
+                }
+                editEmployee = value;
 
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(EditEmployee)));
+            }
+        }
+        private bool editDepartment = true;
+        public bool EditDepartment
+        {
+            get { return editDepartment; }
+            private set
+            {
+                if (value)
+                {
+                    EditEmployee = false;
+                    EditSettings = false;
+                }
+                editDepartment = value;
+
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(EditDepartment)));
+            }
+        }
+        private bool editSettings = false;
+        public bool EditSettings
+        {
+            get { return editSettings; }
+            private set
+            {
+                if (value)
+                {
+                    EditEmployee = false;
+                    EditDepartment = false;
+                }
+                editSettings = value;
+
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(EditSettings)));
+            }
+        }
     }
 }

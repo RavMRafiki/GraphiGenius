@@ -26,6 +26,10 @@ namespace GraphiGenius.MVVM.Model
         public double SaturdayShiftLength { get; set; }
         public int SundayShifts { get; set; }
         public double SundayShiftLength { get; set; }
+        public int StartHour { get; set; }
+        public int EndHour { get; set; }
+        public int StartMinute { get; set; }
+        public int EndMinute { get; set; }
 
 
         public ICollection<Employee> Employee { get; private set;} = new ObservableCollection<Employee>();
