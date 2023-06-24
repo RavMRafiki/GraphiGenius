@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GraphiGenius.MVVM.Model
 {
-    class Department
+    public class Department
     {
         public int Id { get; set; }
         public string Name { get; set; }
