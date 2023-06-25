@@ -53,7 +53,6 @@ namespace GraphiGenius.MVVM.ViewModel
             {
                 EditDepartment = true;
                 currentDepartmentIndex = value;
-                MessageBox.Show(currentDepartmentIndex.ToString() + currentEmployeeIndex.ToString());
                 //string ids = String.Join(", ", departmentsIds.ToString());
                 _reloadEmployees();
                 //zgłoszenie zmiany wartości tej własności
