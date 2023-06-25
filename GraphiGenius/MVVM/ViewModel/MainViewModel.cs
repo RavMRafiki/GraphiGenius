@@ -1,10 +1,12 @@
-﻿using System;
+﻿using GraphiGenius.MVVM.Model;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace GraphiGenius.MVVM.ViewModel
@@ -13,16 +15,33 @@ namespace GraphiGenius.MVVM.ViewModel
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public WindowStateViewModel WindowStateViewModel = new();
-        private int currentDepartment = 0;
-        public int CurrentDepartment
+        //public WindowStateViewModel WindowStateViewModel = new();
+        private Model.DepartmentsDatabaseAccess _departmentsDatabaseAccess = new();
+        public MainViewModel()
         {
-            get { return currentDepartment; }
+            _reloadDepartments();
+        }  
+        private int[] departmentsIds= null;
+        private void _reloadDepartments()
+        {
+            //Departments = new List<Department>();
+            departmentsIds = _departmentsDatabaseAccess.loadDepartments();
+            for (int i =0;i<departmentsIds.Length;i++)
+            {
+                Departments.Add(_departmentsDatabaseAccess.departmentName(departmentsIds[i]));
+            }
+            Departments = Departments;
+
+        }
+        private int currentDepartmentIndex = 0;
+        public int CurrentDepartmentIndex
+        {
+            get { return currentDepartmentIndex; }
             set
             {
-                currentDepartment = value;
+                currentDepartmentIndex = value;
                 //zgłoszenie zmiany wartości tej własności
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentDepartment)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentDepartmentIndex)));
             }
         }
         private List<string> departments = new List<string>();
@@ -30,6 +49,11 @@ namespace GraphiGenius.MVVM.ViewModel
         {
             get
             { return departments; }
+            set
+            {
+                departments = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Departments)));
+            }
         }
 
         private int currentEmployee = 0;

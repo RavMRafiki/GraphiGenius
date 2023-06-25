@@ -10,7 +10,6 @@ namespace GraphiGenius.MVVM.Model
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public int HourSalary { get; set; }
         public int WorkingHours { get; set; }
         public int? DepartmentId { get; set; }
         public Department? Department { get; set; } 
