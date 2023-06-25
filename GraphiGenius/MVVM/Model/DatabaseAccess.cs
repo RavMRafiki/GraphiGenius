@@ -1,4 +1,5 @@
 ﻿using Microsoft.Data.Sqlite;
+using Microsoft.Data;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -10,7 +11,7 @@ using System.Windows;
 
 namespace GraphiGenius.MVVM.Model
 {
-    abstract class IDatabaseAccess
+    abstract class DatabaseAccess
     {
         public DataTable dbConnect(string command)
         {
@@ -26,10 +27,11 @@ namespace GraphiGenius.MVVM.Model
                     cmd.CommandText = command;
                     ad = new SQLiteDataAdapter(cmd);
                     ad.Fill(dt);
+                    //MessageBox.Show(dt.ToString());
                 }
                 catch (SQLiteException ex)
                 {
-                    Console.WriteLine(ex.Message);
+                    MessageBox.Show(ex.Message);
                 }
                 sqlite.Close();
                 return dt;

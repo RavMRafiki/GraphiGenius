@@ -1,6 +1,7 @@
 ﻿using GraphiGenius.MVVM.Model;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -17,11 +18,13 @@ namespace GraphiGenius.MVVM.ViewModel
 
         //public WindowStateViewModel WindowStateViewModel = new();
         private Model.DepartmentsDatabaseAccess _departmentsDatabaseAccess = new();
+        private Model.EmployeeDatabaseAccess _employeeDatabaseAccess= new();
         public MainViewModel()
         {
             _reloadDepartments();
+            _reloadEmployees();
         }  
-        private int[] departmentsIds= null;
+        private int[] departmentsIds;
         private void _reloadDepartments()
         {
             //Departments = new List<Department>();
@@ -30,7 +33,16 @@ namespace GraphiGenius.MVVM.ViewModel
             {
                 Departments.Add(_departmentsDatabaseAccess.departmentName(departmentsIds[i]));
             }
-            Departments = Departments;
+        }
+        private int[] employeesIds;
+        private void _reloadEmployees()
+        {
+            Employees.Clear();
+            employeesIds = _employeeDatabaseAccess.loadEmployees(departmentsIds[currentDepartmentIndex]);
+            for (int i = 0; i < employeesIds.Length; i++)
+            {
+                Employees.Add(_employeeDatabaseAccess.employeeName(employeesIds[i]));
+            }
 
         }
         private int currentDepartmentIndex = 0;
@@ -39,13 +51,17 @@ namespace GraphiGenius.MVVM.ViewModel
             get { return currentDepartmentIndex; }
             set
             {
+                EditDepartment = true;
                 currentDepartmentIndex = value;
+                MessageBox.Show(currentDepartmentIndex.ToString() + currentEmployeeIndex.ToString());
+                //string ids = String.Join(", ", departmentsIds.ToString());
+                _reloadEmployees();
                 //zgłoszenie zmiany wartości tej własności
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentDepartmentIndex)));
             }
         }
-        private List<string> departments = new List<string>();
-        public List<string> Departments
+        private ObservableCollection<string> departments = new ObservableCollection<string>();
+        public ObservableCollection<string> Departments
         {
             get
             { return departments; }
@@ -56,22 +72,31 @@ namespace GraphiGenius.MVVM.ViewModel
             }
         }
 
-        private int currentEmployee = 0;
-        public int CurrentEmployee
+        private int currentEmployeeIndex = 0;
+        public int CurrentEmployeeIndex
         {
-            get { return currentEmployee; }
+            get { return currentEmployeeIndex; }
             set
             {
-                currentEmployee = value;
+                if (value != -1)
+                {
+                    EditEmployee= true;
+                }
+                currentEmployeeIndex = value;
                 //zgłoszenie zmiany wartości tej własności
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentEmployee)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentEmployeeIndex)));
             }
         }
-        private List<string> employees = new List<string>();
-        public List<string> Employees
+        private ObservableCollection<string> employees = new ObservableCollection<string>();
+        public ObservableCollection<string> Employees
         {
             get
             { return employees; }
+            set
+            {
+                employees = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Employees)));
+            }
         }
         private ICommand _generate;
 
@@ -146,34 +171,42 @@ namespace GraphiGenius.MVVM.ViewModel
             EditDepartment= true;
 
         }
-        private bool editEmployee = false;
+        public void selectedEmployeeChanged()
+        {
+            EditEmployee= true;
+        }
+        public void selectedDepartmentChanged()
+        {
+            EditDepartment = true;
+        }
+        private bool editEmployee = true;
         public bool EditEmployee
         {
             get { return editEmployee; }
             private set
             {
+                editEmployee = value;
                 if (value)
                 {
                     EditDepartment = false;
                     EditSettings = false;
                 }
-                editEmployee = value;
 
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(EditEmployee)));
             }
         }
-        private bool editDepartment = true;
+        private bool editDepartment = false;
         public bool EditDepartment
         {
             get { return editDepartment; }
             private set
             {
+                editDepartment = value;
                 if (value)
                 {
                     EditEmployee = false;
                     EditSettings = false;
                 }
-                editDepartment = value;
 
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(EditDepartment)));
             }
@@ -184,12 +217,12 @@ namespace GraphiGenius.MVVM.ViewModel
             get { return editSettings; }
             private set
             {
+                editSettings = value;
                 if (value)
                 {
                     EditEmployee = false;
                     EditDepartment = false;
                 }
-                editSettings = value;
 
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(EditSettings)));
             }

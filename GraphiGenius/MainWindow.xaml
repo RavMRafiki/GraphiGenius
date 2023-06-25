@@ -74,7 +74,7 @@
                 <ListBox Grid.Row="2"
          HorizontalAlignment="Center"
          VerticalAlignment="Top"
-         SelectedIndex="{Binding CurrentDepartment, Mode=TwoWay}"
+         SelectedIndex="{Binding CurrentDepartmentIndex}"
          ItemsSource="{Binding Path=Departments}"
          Width="150"
          Background="Transparent"
@@ -97,10 +97,10 @@
                         </Style>
                     </ListBox.Style>
                 </ListBox>
-                <ListBox Grid.Row="2"
+                <ListBox Grid.Row="2" Grid.Column="1"
          HorizontalAlignment="Center"
          VerticalAlignment="Top"
-         SelectedIndex="{Binding CurrentEmployee, Mode=TwoWay}"
+         SelectedIndex="{Binding CurrentEmployeeIndex}"
          Width="150"
          ItemsSource="{Binding Path=Employees}"
          Background="Transparent"
