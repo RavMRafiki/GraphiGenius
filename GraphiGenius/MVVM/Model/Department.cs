@@ -13,7 +13,7 @@ namespace GraphiGenius.MVVM.Model
         public int Id { get; set; }
         public string Name { get; set; }
         public ObservableCollection<int> Shifts { get; set; }
-        public ObservableCollection<double> ShiftLengths { get; set; }
+        public ObservableCollection<int> ShiftLengths { get; set; }
         public ObservableCollection<int> StartHours { get; set; }
         public ObservableCollection<int> StartMinutes { get; set; }
         public ObservableCollection<int> EndHours { get; set; }

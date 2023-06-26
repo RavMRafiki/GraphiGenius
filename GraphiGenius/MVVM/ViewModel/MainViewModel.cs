@@ -29,7 +29,7 @@ namespace GraphiGenius.MVVM.ViewModel
         private int[] departmentsIds;
         private void _reloadDepartments()
         {
-            //Departments = new List<Department>();
+            Departments = new();
             departmentsIds = _departmentsDatabaseAccess.loadDepartments();
             for (int i =0;i<departmentsIds.Length;i++)
             {
@@ -55,9 +55,8 @@ namespace GraphiGenius.MVVM.ViewModel
             {
                 EditDepartment = true;
                 currentDepartmentIndex = value;
-                //string ids = String.Join(", ", departmentsIds.ToString());
                 _reloadEmployees();
-                //zgłoszenie zmiany wartości tej własności
+                loadDepartment();
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentDepartmentIndex)));
             }
         }
@@ -70,6 +69,84 @@ namespace GraphiGenius.MVVM.ViewModel
             {
                 departments = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Departments)));
+            }
+        }
+        private string departmentNameForm;
+        public string DepartmentNameForm
+        {
+            get { return departmentNameForm; }
+            set
+            {
+                departmentNameForm = value;
+                _departmentForm.Name = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DepartmentNameForm)));
+
+            }
+        }
+        private ObservableCollection<int> shiftsForm;
+        public ObservableCollection<int> ShiftsForm
+        {
+            get { return shiftsForm; }
+            set
+            {
+                shiftsForm = value;
+                _departmentForm.Shifts = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ShiftsForm)));
+            }
+        }
+        private ObservableCollection<int> shiftLenghtsForm;
+        public ObservableCollection<int> ShiftLenghtsForm
+        {
+            get { return shiftLenghtsForm; }
+            set
+            {
+                shiftLenghtsForm = value;
+                _departmentForm.ShiftLengths = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ShiftLenghtsForm)));
+            }
+        }
+        private ObservableCollection<int> startHoursForm;
+        public ObservableCollection<int> StartHoursForm
+        {
+            get { return shiftLenghtsForm; }
+            set
+            {
+                shiftLenghtsForm = value;
+                _departmentForm.StartHours = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(StartHoursForm)));
+            }
+        }
+        private ObservableCollection<int> startMinutesForm;
+        public ObservableCollection<int> StartMinutesForm
+        {
+            get { return startMinutesForm; }
+            set
+            {
+                startMinutesForm = value;
+                _departmentForm.StartMinutes = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(StartMinutesForm)));
+            }
+        }
+        private ObservableCollection<int> endHoursForm;
+        public ObservableCollection<int> EndHoursForm
+        {
+            get { return endHoursForm; }
+            set
+            {
+                endHoursForm = value;
+                _departmentForm.EndHours = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(EndHoursForm)));
+            }
+        }
+        private ObservableCollection<int> endMinutesForm;
+        public ObservableCollection<int> EndMinutesForm
+        {
+            get { return endMinutesForm; }
+            set
+            {
+                endMinutesForm = value;
+                _departmentForm.EndMinutes = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(EndMinutesForm)));
             }
         }
 
@@ -121,25 +198,7 @@ namespace GraphiGenius.MVVM.ViewModel
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Employees)));
             }
         }
-        private ICommand _generate;
-
-        public ICommand Generate
-        {
-            get
-            {
-                // jesli nie jest określone polecenie to tworzymy je i zwracamy poprozez 
-                //pomocniczy typ RelayCommand
-                return _generate ?? (_generate = new BaseClass.RelayCommand(
-                    //co wykonuje polecenie
-                    (p) => {
-                        generateGrahic();
-                    }
-                    ,
-                    //warunek kiedy może je wykonać
-                    p => true)
-                    );
-            }
-        }
+        #region EditDepartments
         private ICommand _addDepartment;
 
 
@@ -160,7 +219,66 @@ namespace GraphiGenius.MVVM.ViewModel
                     );
             }
         }
-            #region EditEmployees
+        private ICommand _saveDepartment;
+        public ICommand SaveDepartment
+        {
+            get
+            {
+                return _saveDepartment ?? (_saveDepartment = new BaseClass.RelayCommand(
+                (p) => {
+                    saveDepartment();
+                }
+                ,
+            p => true)
+                );
+            }
+        }
+        private ICommand _deleteDepartment;
+        public ICommand DeleteDepartment
+        {
+            get
+            {
+                return _deleteDepartment ?? (_deleteDepartment = new BaseClass.RelayCommand(
+                (p) => {
+                    deleteDepartment();
+                }
+                ,
+            p => true)
+                );
+            }
+        }
+        private void loadDepartment()
+        {
+            _departmentForm = _departmentsDatabaseAccess.loadDepartment(departmentsIds[currentDepartmentIndex]);
+            MessageBox.Show(messageBoxText: _departmentForm.Name);
+            DepartmentNameForm = _departmentForm.Name;
+            ShiftsForm= _departmentForm.Shifts;
+            ShiftLenghtsForm = _departmentForm.ShiftLengths;
+            StartHoursForm= _departmentForm.StartHours;
+            StartMinutesForm= _departmentForm.StartMinutes;
+            EndHoursForm= _departmentForm.EndHours;
+            EndMinutesForm= _departmentForm.EndMinutes;
+        }
+        private void saveDepartment()
+        {
+            _departmentsDatabaseAccess.editDepartment(_departmentForm);
+            _reloadDepartments();
+        }
+        private void deleteDepartment()
+        {
+            _departmentsDatabaseAccess.deleteDepartment(_departmentForm.Id);
+            _reloadDepartments();
+        }
+        private void addDepartment()
+        {
+            _departmentsDatabaseAccess.addDepartment();
+            _reloadDepartments();
+            EditDepartment = true;
+            CurrentDepartmentIndex= departmentsIds.Length - 1;
+
+        }
+        #endregion
+        #region EditEmployees
         private ICommand _addEmployee;
 
 
@@ -238,16 +356,55 @@ namespace GraphiGenius.MVVM.ViewModel
 
         }
         #endregion
-        private void generateGrahic()
+            #region Generate
+        private ICommand _generatesettings;
+
+        public ICommand GenerateSettings
+        {
+            get
+            {
+                // jesli nie jest określone polecenie to tworzymy je i zwracamy poprozez 
+                //pomocniczy typ RelayCommand
+                return _generatesettings ?? (_generatesettings = new BaseClass.RelayCommand(
+                    //co wykonuje polecenie
+                    (p) => {
+                        generateSettings();
+                    }
+                    ,
+                    //warunek kiedy może je wykonać
+                    p => true)
+                    );
+            }
+        }
+        private ICommand _generate;
+
+        public ICommand Generate
+        {
+            get
+            {
+                // jesli nie jest określone polecenie to tworzymy je i zwracamy poprozez 
+                //pomocniczy typ RelayCommand
+                return _generate ?? (_generate = new BaseClass.RelayCommand(
+                    //co wykonuje polecenie
+                    (p) => {
+                        generate();
+                    }
+                    ,
+                    //warunek kiedy może je wykonać
+                    p => true)
+                    );
+            }
+        }
+        private void generateSettings()
         {
             EditSettings = true;
         }
-            #region ChooseView
-        private void addDepartment()
+        private void generate()
         {
-            EditDepartment= true;
-
+            throw new NotImplementedException();
         }
+        #endregion
+            #region ChooseView
         public void selectedEmployeeChanged()
         {
             EditEmployee= true;
