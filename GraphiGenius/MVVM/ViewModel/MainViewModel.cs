@@ -19,6 +19,8 @@ namespace GraphiGenius.MVVM.ViewModel
         //public WindowStateViewModel WindowStateViewModel = new();
         private Model.DepartmentsDatabaseAccess _departmentsDatabaseAccess = new();
         private Model.EmployeeDatabaseAccess _employeeDatabaseAccess= new();
+        private Model.Employee _employeeForm = new();
+        private Model.Department _departmentForm = new();
         public MainViewModel()
         {
             _reloadDepartments();
@@ -82,8 +84,30 @@ namespace GraphiGenius.MVVM.ViewModel
                     EditEmployee= true;
                 }
                 currentEmployeeIndex = value;
+                loadEmployee();
                 //zgłoszenie zmiany wartości tej własności
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentEmployeeIndex)));
+            }
+        }
+        private string employeeNameForm;
+        public string EmployeeNameForm
+        {
+            get { return employeeNameForm; }
+            set
+            {
+                employeeNameForm = value;
+                _employeeForm.Name= value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(EmployeeNameForm)));
+
+            }
+        }
+        private string employeeWorkingHoursForm;
+        public string EmployeeWorkingHoursForm
+        {
+            get { return employeeWorkingHoursForm; }
+            set { employeeWorkingHoursForm = value;
+                _employeeForm.WorkingHours = Int32.Parse(value);
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(EmployeeWorkingHoursForm)));
             }
         }
         private ObservableCollection<string> employees = new ObservableCollection<string>();
@@ -156,13 +180,64 @@ namespace GraphiGenius.MVVM.ViewModel
                     );
             }
         }
+        private ICommand _saveEmployee;
+        public ICommand SaveEmployee
+        {
+            get
+            {
+                return _saveEmployee ?? (_saveEmployee = new BaseClass.RelayCommand(
+                (p) => {
+                saveEmployee();
+            }
+                ,
+            p => true)
+                );
+            }
+        }
+        private ICommand _deleteEmployee;
+        public ICommand DeleteEmployee
+        {
+            get
+            {
+                return _deleteEmployee ?? (_deleteEmployee = new BaseClass.RelayCommand(
+                (p) => {
+                    deleteEmployee();
+                }
+                ,
+            p => true)
+                );
+            }
+        }
+        private void loadEmployee()
+        {
+            _employeeForm = _employeeDatabaseAccess.loadEmployee(employeesIds[currentEmployeeIndex]);
+            //MessageBox.Show(_employeeForm.Name + _employeeForm.HourSalary.ToString() + _employeeForm.WorkingHours.ToString());
+
+            EmployeeNameForm = _employeeForm.Name;
+            EmployeeWorkingHoursForm = _employeeForm.WorkingHours.ToString();
+        }
+        private void saveEmployee()
+        {
+            _employeeDatabaseAccess.editEmployee(_employeeForm);
+            _reloadEmployees();
+        }
+        private void deleteEmployee()
+        {
+            _employeeDatabaseAccess.deleteEmployee(_employeeForm.Id);
+            _reloadEmployees();
+
+        }
+
         private void generateGrahic()
         {
             EditSettings = true;
         }
         private void addEmployee()
         {
+            _employeeDatabaseAccess.addEmployee(departmentsIds[currentDepartmentIndex]);
+            _reloadEmployees();
             EditEmployee = true;
+            CurrentEmployeeIndex = employeesIds.Length -1;
 
         }
         private void addDepartment()
@@ -178,6 +253,7 @@ namespace GraphiGenius.MVVM.ViewModel
         {
             EditDepartment = true;
         }
+#region ChooseView
         private bool editEmployee = true;
         public bool EditEmployee
         {
@@ -226,5 +302,6 @@ namespace GraphiGenius.MVVM.ViewModel
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(EditSettings)));
             }
         }
+        #endregion
     }
 }

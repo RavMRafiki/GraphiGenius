@@ -33,5 +33,9 @@ namespace GraphiGenius.MVVM.Model
             //MessageBox.Show(nazwa);
             return nazwa;
         }
+        public void addDepartment()
+        {
+            dbConnectAdd($"INSERT INTO Employee (Name, HourSalary, WorkingHours, DepartmentId) VALUES ('EmployeeName', 0, 0, {departmentId});");
+        }
     }
 }

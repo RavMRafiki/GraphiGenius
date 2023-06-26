@@ -37,6 +37,26 @@ namespace GraphiGenius.MVVM.Model
                 return dt;
             }
         }
+        public void dbConnectAdd(string command)
+        {
+            using (SQLiteConnection sqlite = new SQLiteConnection("Data Source=GraphiGeniusDB.db; Version=3;"))
+            {
+                DataTable dt = new DataTable();
+                try
+                {
+                    SQLiteCommand cmd;
+                    sqlite.Open();
+                    cmd = sqlite.CreateCommand();
+                    cmd.CommandText = command;
+                    cmd.ExecuteNonQuery();
+                }
+                catch (SQLiteException ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+                sqlite.Close();
+            }
+        }
 
 
     }

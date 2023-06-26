@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace GraphiGenius.MVVM.Model
 {
@@ -32,6 +33,30 @@ namespace GraphiGenius.MVVM.Model
             string nazwa = Convert.ToString(dt.Rows[0]["Name"]);
             //System.Windows.MessageBox.Show(nazwa);
             return nazwa;
+        }
+        public void addEmployee(int departmentId)
+        {
+            dbConnectAdd($"INSERT INTO Employee (Name, HourSalary, WorkingHours, DepartmentId) VALUES ('EmployeeName', 0, 0, {departmentId});");
+        }
+        public void editEmployee(Employee employee) 
+        {
+            dbConnectAdd($"UPDATE Employee SET Name = '{employee.Name}',HourSalary = {employee.HourSalary}, WorkingHours = {employee.WorkingHours} WHERE Id = {employee.Id};");
+        }
+        public Employee loadEmployee(int employeeId)
+        {
+            Employee employee = new();
+            DataTable dt = new DataTable();
+            dt = dbConnect($"select * from Employee where Id={employeeId};");
+            employee.Id = employeeId;
+            employee.Name = Convert.ToString(dt.Rows[0]["Name"]);
+            employee.DepartmentId = Convert.ToInt32(dt.Rows[0]["DepartmentId"]);
+            employee.WorkingHours = Convert.ToInt32(dt.Rows[0]["WorkingHours"]);
+            employee.HourSalary = Convert.ToInt32(dt.Rows[0]["HourSalary"]);
+            return employee;
+        }
+        public void deleteEmployee(int employeeId)
+        {
+            dbConnectAdd($"DELETE FROM Employee where Id={employeeId};");
         }
     }
 }
