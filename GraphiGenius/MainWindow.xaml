@@ -68,15 +68,15 @@
                 <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
                     <Button Command="{Binding AddDepartment}" Style="{StaticResource ButtonStyle}">Add Department</Button>
                     <Button Command="{Binding AddEmployee}" Style="{StaticResource ButtonStyle}">Add Employee</Button>
-                    <Button Command="{Binding Generate}" Style="{StaticResource ButtonStyle}">Generate</Button>
+                    <Button Command="{Binding GenerateSettings}" Style="{StaticResource ButtonStyle}">Generate</Button>
 
                 </StackPanel>
                 <ListBox Grid.Row="2"
          HorizontalAlignment="Center"
          VerticalAlignment="Top"
-         SelectedIndex="{Binding CurrentDepartment, Mode=TwoWay}"
-         Width="150"
+         SelectedIndex="{Binding CurrentDepartmentIndex}"
          ItemsSource="{Binding Path=Departments}"
+         Width="150"
          Background="Transparent"
          BorderThickness="0"
          ItemContainerStyle="{StaticResource ListBoxItemStyle}"
@@ -97,10 +97,10 @@
                         </Style>
                     </ListBox.Style>
                 </ListBox>
-                <ListBox Grid.Row="2"
+                <ListBox Grid.Row="2" Grid.Column="1"
          HorizontalAlignment="Center"
          VerticalAlignment="Top"
-         SelectedIndex="{Binding CurrentEmployee, Mode=TwoWay}"
+         SelectedIndex="{Binding CurrentEmployeeIndex}"
          Width="150"
          ItemsSource="{Binding Path=Employees}"
          Background="Transparent"
@@ -129,10 +129,12 @@
                     </TextBlock>
 
                     <Label  Foreground="White">Name</Label>
-                    <TextBox></TextBox>
+                    <TextBox Text="{Binding EmployeeNameForm}"></TextBox>
                     <Label  Foreground="White">Working Hours</Label>
-                    <TextBox PreviewTextInput="PreviewNumericInput">0</TextBox>
+                    <TextBox Text="{Binding EmployeeWorkingHoursForm}" PreviewTextInput="PreviewNumericInput"></TextBox>
 
+                    <Button Command="{Binding SaveEmployee}" Style="{StaticResource ButtonStyle}">Save Employee</Button>
+                    <Button Command="{Binding DeleteEmployee}" Style="{StaticResource ButtonStyle}">Delete Employee</Button>
                     <StackPanel.Style>
                         <Style TargetType="StackPanel">
                             <Style.Triggers>
@@ -148,7 +150,7 @@
                     Department Editor
                     </TextBlock>
                     <Label>Name</Label>
-                    <TextBox></TextBox>
+                    <TextBox Text="{Binding DepartmentNameForm}"></TextBox>
                     <Label>Working Days</Label>
                     <Grid >
                         <Grid.ColumnDefinitions>
@@ -165,44 +167,116 @@
                             <RowDefinition/>
                             <RowDefinition/>
                             <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
                         </Grid.RowDefinitions>
                         <Label Grid.Row="0" Grid.Column="0">Day</Label>
                         <Label Grid.Row="1" Grid.Column="0">Shifts</Label>
                         <Label Grid.Row="2" Grid.Column="0">Sh. Length</Label>
+                        <Label Grid.Row="3" Grid.Column="0">Start Time</Label>
+                        <Label Grid.Row="4" Grid.Column="0">End Time</Label>
+
                         <Label Grid.Row="0" Grid.Column="1">Monday</Label>
-                        <TextBox Grid.Row="1" Grid.Column="1" PreviewTextInput="PreviewNumericInput"></TextBox>
-                        <TextBox Grid.Row="2" Grid.Column="1" PreviewTextInput="PreviewNumericInputMonths"></TextBox>
+                        <TextBox Grid.Row="1" Grid.Column="1" PreviewTextInput="PreviewNumericInput" Text="{Binding ShiftsForm[0]}"></TextBox>
+                        <TextBox Grid.Row="2" Grid.Column="1" PreviewTextInput="PreviewNumericInputMonths" Text="{Binding ShiftLenghtsForm[0]}"></TextBox>
+                        <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
+                            <TextBox MinWidth="40" TextAlignment="Right" PreviewTextInput="PreviewNumericInputHours" Text="{Binding StartHoursForm[0]}"></TextBox>
+                            <Label>:</Label>
+                            <TextBox MinWidth="40" TextAlignment="Left" PreviewTextInput="PreviewNumericInputMinutes" Text="{Binding StartHoursForm[0]}"></TextBox>
+                        </StackPanel>
+                        <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
+                            <TextBox MinWidth="40" TextAlignment="Right" PreviewTextInput="PreviewNumericInputHours" Text="{Binding EndHoursForm[0]}"></TextBox>
+                            <Label>:</Label>
+                            <TextBox MinWidth="40" TextAlignment="Left" PreviewTextInput="PreviewNumericInputMinutes" Text="{Binding EndMinutesForm[0]}"></TextBox>
+                        </StackPanel>
+
                         <Label Grid.Row="0" Grid.Column="2">Tuesday</Label>
-                        <TextBox Grid.Row="1" Grid.Column="2" PreviewTextInput="PreviewNumericInput"></TextBox>
-                        <TextBox Grid.Row="2" Grid.Column="2" PreviewTextInput="PreviewNumericInputMonths"></TextBox>
+                        <TextBox Grid.Row="1" Grid.Column="2" PreviewTextInput="PreviewNumericInput" Text="{Binding ShiftsForm[1]}"></TextBox>
+                        <TextBox Grid.Row="2" Grid.Column="2" PreviewTextInput="PreviewNumericInputMonths" Text="{Binding ShiftLenghtsForm[1]}"></TextBox>
+                        <StackPanel Grid.Row="3" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Center">
+                            <TextBox MinWidth="40" TextAlignment="Right" PreviewTextInput="PreviewNumericInputHours" Text="{Binding StartHoursForm[1]}"></TextBox>
+                            <Label>:</Label>
+                            <TextBox MinWidth="40" TextAlignment="Left" PreviewTextInput="PreviewNumericInputMinutes" Text="{Binding StartMinutesForm[1]}"></TextBox>
+                        </StackPanel>
+                        <StackPanel Grid.Row="4" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Center">
+                            <TextBox MinWidth="40" TextAlignment="Right" PreviewTextInput="PreviewNumericInputHours" Text="{Binding EndHoursForm[1]}"></TextBox>
+                            <Label>:</Label>
+                            <TextBox MinWidth="40" TextAlignment="Left" PreviewTextInput="PreviewNumericInputMinutes" Text="{Binding EndMinutesForm[1]}"></TextBox>
+                        </StackPanel>
+
                         <Label Grid.Row="0" Grid.Column="3">Wednesday</Label>
-                        <TextBox Grid.Row="1" Grid.Column="3" PreviewTextInput="PreviewNumericInput"></TextBox>
-                        <TextBox Grid.Row="2" Grid.Column="3" PreviewTextInput="PreviewNumericInputMonths"></TextBox>
+                        <TextBox Grid.Row="1" Grid.Column="3" PreviewTextInput="PreviewNumericInput" Text="{Binding ShiftsForm[2]}"></TextBox>
+                        <TextBox Grid.Row="2" Grid.Column="3" PreviewTextInput="PreviewNumericInputMonths" Text="{Binding ShiftLenghtsForm[2]}"></TextBox>
+                        <StackPanel Grid.Row="3" Grid.Column="3" Orientation="Horizontal" HorizontalAlignment="Center">
+                            <TextBox MinWidth="40" TextAlignment="Right" PreviewTextInput="PreviewNumericInputHours" Text="{Binding StartHoursForm[2]}"></TextBox>
+                            <Label>:</Label>
+                            <TextBox MinWidth="40" TextAlignment="Left" PreviewTextInput="PreviewNumericInputMinutes" Text="{Binding StartMinutesForm[2]}"></TextBox>
+                        </StackPanel>
+                        <StackPanel Grid.Row="4" Grid.Column="3" Orientation="Horizontal" HorizontalAlignment="Center">
+                            <TextBox MinWidth="40" TextAlignment="Right" PreviewTextInput="PreviewNumericInputHours" Text="{Binding EndHoursForm[2]}"></TextBox>
+                            <Label>:</Label>
+                            <TextBox MinWidth="40" TextAlignment="Left" PreviewTextInput="PreviewNumericInputMinutes" Text="{Binding EndMinutesForm[2]}"></TextBox>
+                        </StackPanel>
+
                         <Label Grid.Row="0" Grid.Column="4">Thursday</Label>
-                        <TextBox Grid.Row="1" Grid.Column="4" PreviewTextInput="PreviewNumericInput"></TextBox>
-                        <TextBox Grid.Row="2" Grid.Column="4" PreviewTextInput="PreviewNumericInputMonths"></TextBox>
+                        <TextBox Grid.Row="1" Grid.Column="4" PreviewTextInput="PreviewNumericInput" Text="{Binding ShiftsForm[3]}"></TextBox>
+                        <TextBox Grid.Row="2" Grid.Column="4" PreviewTextInput="PreviewNumericInputMonths" Text="{Binding ShiftLenghtsForm[3]}"></TextBox>
+                        <StackPanel Grid.Row="3" Grid.Column="4" Orientation="Horizontal" HorizontalAlignment="Center">
+                            <TextBox MinWidth="40" TextAlignment="Right" PreviewTextInput="PreviewNumericInputHours" Text="{Binding StartHoursForm[3]}"></TextBox>
+                            <Label>:</Label>
+                            <TextBox MinWidth="40" TextAlignment="Left" PreviewTextInput="PreviewNumericInputMinutes" Text="{Binding StartMinutesForm[3]}"></TextBox>
+                        </StackPanel>
+                        <StackPanel Grid.Row="4" Grid.Column="4" Orientation="Horizontal" HorizontalAlignment="Center">
+                            <TextBox MinWidth="40" TextAlignment="Right" PreviewTextInput="PreviewNumericInputHours" Text="{Binding EndHoursForm[3]}"></TextBox>
+                            <Label>:</Label>
+                            <TextBox MinWidth="40" TextAlignment="Left" PreviewTextInput="PreviewNumericInputMinutes" Text="{Binding EndMinutesForm[3]}"></TextBox>
+                        </StackPanel>
+
                         <Label Grid.Row="0" Grid.Column="5">Friday</Label>
-                        <TextBox Grid.Row="1" Grid.Column="5" PreviewTextInput="PreviewNumericInput"></TextBox>
-                        <TextBox Grid.Row="2" Grid.Column="5" PreviewTextInput="PreviewNumericInputMonths"></TextBox>
+                        <TextBox Grid.Row="1" Grid.Column="5" PreviewTextInput="PreviewNumericInput" Text="{Binding ShiftsForm[4]}"></TextBox>
+                        <TextBox Grid.Row="2" Grid.Column="5" PreviewTextInput="PreviewNumericInputMonths" Text="{Binding ShiftLenghtsForm[4]}"></TextBox>
+                        <StackPanel Grid.Row="3" Grid.Column="5" Orientation="Horizontal" HorizontalAlignment="Center">
+                            <TextBox MinWidth="40" TextAlignment="Right" PreviewTextInput="PreviewNumericInputHours" Text="{Binding StartHoursForm[4]}"></TextBox>
+                            <Label>:</Label>
+                            <TextBox MinWidth="40" TextAlignment="Left" PreviewTextInput="PreviewNumericInputMinutes" Text="{Binding StartMinutesForm[4]}"></TextBox>
+                        </StackPanel>
+                        <StackPanel Grid.Row="4" Grid.Column="5" Orientation="Horizontal" HorizontalAlignment="Center">
+                            <TextBox MinWidth="40" TextAlignment="Right" PreviewTextInput="PreviewNumericInputHours" Text="{Binding EndHoursForm[4]}"></TextBox>
+                            <Label>:</Label>
+                            <TextBox MinWidth="40" TextAlignment="Left" PreviewTextInput="PreviewNumericInputMinutes" Text="{Binding EndMinutesForm[4]}"></TextBox>
+                        </StackPanel>
+
                         <Label Grid.Row="0" Grid.Column="6">Saturday</Label>
-                        <TextBox Grid.Row="1" Grid.Column="6" PreviewTextInput="PreviewNumericInput"></TextBox>
-                        <TextBox Grid.Row="2" Grid.Column="6" PreviewTextInput="PreviewNumericInputMonths"></TextBox>
+                        <TextBox Grid.Row="1" Grid.Column="6" PreviewTextInput="PreviewNumericInput" Text="{Binding ShiftsForm[5]}"></TextBox>
+                        <TextBox Grid.Row="2" Grid.Column="6" PreviewTextInput="PreviewNumericInputMonths" Text="{Binding ShiftLenghtsForm[5]}"></TextBox>
+                        <StackPanel Grid.Row="3" Grid.Column="6" Orientation="Horizontal" HorizontalAlignment="Center">
+                            <TextBox MinWidth="40" TextAlignment="Right" PreviewTextInput="PreviewNumericInputHours" Text="{Binding StartHoursForm[5]}"></TextBox>
+                            <Label>:</Label>
+                            <TextBox MinWidth="40" TextAlignment="Left" PreviewTextInput="PreviewNumericInputMinutes" Text="{Binding StartMinutesForm[5]}"></TextBox>
+                        </StackPanel>
+                        <StackPanel Grid.Row="4" Grid.Column="6" Orientation="Horizontal" HorizontalAlignment="Center">
+                            <TextBox MinWidth="40" TextAlignment="Right" PreviewTextInput="PreviewNumericInputHours" Text="{Binding EndHoursForm[5]}"></TextBox>
+                            <Label>:</Label>
+                            <TextBox MinWidth="40" TextAlignment="Left" PreviewTextInput="PreviewNumericInputMinutes" Text="{Binding EndMinutesForm[5]}"></TextBox>
+                        </StackPanel>
+
                         <Label Grid.Row="0" Grid.Column="7">Sunday</Label>
-                        <TextBox Grid.Row="1" Grid.Column="7" PreviewTextInput="PreviewNumericInput"></TextBox>
-                        <TextBox Grid.Row="2" Grid.Column="7" PreviewTextInput="PreviewNumericInputMonths"></TextBox>
+                        <TextBox Grid.Row="1" Grid.Column="7" PreviewTextInput="PreviewNumericInput" Text="{Binding ShiftsForm[6]}"></TextBox>
+                        <TextBox Grid.Row="2" Grid.Column="7" PreviewTextInput="PreviewNumericInputMonths" Text="{Binding ShiftLenghtsForm[6]}"></TextBox>
+                        <StackPanel Grid.Row="3" Grid.Column="7" Orientation="Horizontal" HorizontalAlignment="Center">
+                            <TextBox MinWidth="40" TextAlignment="Right" PreviewTextInput="PreviewNumericInputHours" Text="{Binding StartHoursForm[6]}"></TextBox>
+                            <Label>:</Label>
+                            <TextBox MinWidth="40" TextAlignment="Left" PreviewTextInput="PreviewNumericInputMinutes" Text="{Binding StartMinutesForm[6]}"></TextBox>
+                        </StackPanel>
+                        <StackPanel Grid.Row="4" Grid.Column="7" Orientation="Horizontal" HorizontalAlignment="Center">
+                            <TextBox MinWidth="40" TextAlignment="Right" PreviewTextInput="PreviewNumericInputHours" Text="{Binding EndHoursForm[6]}"></TextBox>
+                            <Label>:</Label>
+                            <TextBox MinWidth="40" TextAlignment="Left" PreviewTextInput="PreviewNumericInputMinutes" Text="{Binding EndMinutesForm[6]}"></TextBox>
+                        </StackPanel>
+
                     </Grid>
-                    <Label>Start Time</Label>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
-                        <TextBox MinWidth="40" TextAlignment="Right" PreviewTextInput="PreviewNumericInputHours"></TextBox>
-                        <Label>:</Label>
-                        <TextBox MinWidth="40" TextAlignment="Left" PreviewTextInput="PreviewNumericInputMinutes"></TextBox>
-                    </StackPanel>
-                    <Label>End Time</Label>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
-                        <TextBox MinWidth="40" TextAlignment="Right" PreviewTextInput="PreviewNumericInputHours"></TextBox>
-                        <Label>:</Label>
-                        <TextBox MinWidth="40" TextAlignment="Left" PreviewTextInput="PreviewNumericInputMinutes"></TextBox>
-                    </StackPanel>
+                        <Button Command="{Binding SaveDepartment}" Style="{StaticResource ButtonStyle}">Save Department</Button>
+                    <Button Command="{Binding DeleteDepartment}" Style="{StaticResource ButtonStyle}">Delete Department</Button>
                     <StackPanel.Style>
                         <Style TargetType="StackPanel">
                             <Style.Triggers>
@@ -223,6 +297,7 @@
                     <Label  Foreground="White">Month Number</Label>
                     <TextBox PreviewTextInput="PreviewNumericInputMonths"></TextBox>
 
+                    <Button Command="{Binding Generate}" Style="{StaticResource ButtonStyle}">Generate</Button>
                     <StackPanel.Style>
                         <Style TargetType="StackPanel">
                             <Style.Triggers>
@@ -232,6 +307,7 @@
                             </Style.Triggers>
                         </Style>
                     </StackPanel.Style>
+
                 </StackPanel>
             </Grid>
         </Border>
