@@ -140,26 +140,6 @@ namespace GraphiGenius.MVVM.ViewModel
                     );
             }
         }
-        private ICommand _addEmployee;
-
-
-        public ICommand AddEmployee
-        {
-            get
-            {
-                // jesli nie jest określone polecenie to tworzymy je i zwracamy poprozez 
-                //pomocniczy typ RelayCommand
-                return _addEmployee ?? (_addEmployee = new BaseClass.RelayCommand(
-                    //co wykonuje polecenie
-                    (p) => {
-                        addEmployee();
-                    }
-                    ,
-                    //warunek kiedy może je wykonać
-                    p => true)
-                    );
-            }
-        }
         private ICommand _addDepartment;
 
 
@@ -173,6 +153,27 @@ namespace GraphiGenius.MVVM.ViewModel
                     //co wykonuje polecenie
                     (p) => {
                         addDepartment();
+                    }
+                    ,
+                    //warunek kiedy może je wykonać
+                    p => true)
+                    );
+            }
+        }
+            #region EditEmployees
+        private ICommand _addEmployee;
+
+
+        public ICommand AddEmployee
+        {
+            get
+            {
+                // jesli nie jest określone polecenie to tworzymy je i zwracamy poprozez 
+                //pomocniczy typ RelayCommand
+                return _addEmployee ?? (_addEmployee = new BaseClass.RelayCommand(
+                    //co wykonuje polecenie
+                    (p) => {
+                        addEmployee();
                     }
                     ,
                     //warunek kiedy może je wykonać
@@ -228,10 +229,6 @@ namespace GraphiGenius.MVVM.ViewModel
 
         }
 
-        private void generateGrahic()
-        {
-            EditSettings = true;
-        }
         private void addEmployee()
         {
             _employeeDatabaseAccess.addEmployee(departmentsIds[currentDepartmentIndex]);
@@ -240,6 +237,12 @@ namespace GraphiGenius.MVVM.ViewModel
             CurrentEmployeeIndex = employeesIds.Length -1;
 
         }
+        #endregion
+        private void generateGrahic()
+        {
+            EditSettings = true;
+        }
+            #region ChooseView
         private void addDepartment()
         {
             EditDepartment= true;
@@ -253,7 +256,6 @@ namespace GraphiGenius.MVVM.ViewModel
         {
             EditDepartment = true;
         }
-#region ChooseView
         private bool editEmployee = true;
         public bool EditEmployee
         {

@@ -133,8 +133,8 @@
                     <Label  Foreground="White">Working Hours</Label>
                     <TextBox Text="{Binding EmployeeWorkingHoursForm}" PreviewTextInput="PreviewNumericInput"></TextBox>
 
-                    <Button Command="{Binding DeleteEmployee}" Style="{StaticResource ButtonStyle}">Delete Employee</Button>
                     <Button Command="{Binding SaveEmployee}" Style="{StaticResource ButtonStyle}">Save Employee</Button>
+                    <Button Command="{Binding DeleteEmployee}" Style="{StaticResource ButtonStyle}">Delete Employee</Button>
                     <StackPanel.Style>
                         <Style TargetType="StackPanel">
                             <Style.Triggers>
@@ -276,6 +276,7 @@
 
                     </Grid>
                         <Button Command="{Binding SaveDepartment}" Style="{StaticResource ButtonStyle}">Save Department</Button>
+                    <Button Command="{Binding DeleteDepartment}" Style="{StaticResource ButtonStyle}">Delete Department</Button>
                     <StackPanel.Style>
                         <Style TargetType="StackPanel">
                             <Style.Triggers>
