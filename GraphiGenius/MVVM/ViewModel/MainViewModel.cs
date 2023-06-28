@@ -411,10 +411,191 @@ namespace GraphiGenius.MVVM.ViewModel
             EditSettings = true;
         }
         private async Task generate()
+
         {
+
+           
+           
+
+
+           string generatehtml = @"<!DOCTYPE html>
+                                <html lang=""pl"">
+                                <head>
+
+                                    <meta charset=""utf-8"">
+                                    <title>Pole Minowe</title>
+                                    <meta name=""keywords"" content=""javascript, jQuery, game, gwent, memory"">
+                                    <meta name=""author"" content=""BB"">
+                                    
+                                    <meta http-equiv=""X-Ua-Compatible"" content=""IE=edge,chrome=1"">
+
+
+                                    <link rel=""stylesheet"" href=""grafmain.css"">
+
+
+                                     <link href=""https://fonts.googleapis.com/css2?family=Rubik+Beastly&display=swap"" rel=""stylesheet""> 
+
+                                    
+                                    
+                                    <!--[if lt IE 9]>
+                                    <script src=""//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js""></script>
+                                    <![endif]-->
+
+
+
+
+                                    <style>
+
+                                    body {
+                                        margin: 0;
+                                        background-color: #35363a;
+                                        color: #fafafa;
+                                        font-family: ""Lobster"", sans-serif;
+                                        font-size: 18px;
+                                        text-align: center;
+                                    }
+
+                                    #board {
+                                        background-color: #787a80;
+                                        justify-content: center;
+                                        margin: auto;
+                                        height: 540px;
+                                        width: 1200px;
+                                    }
+
+                                    #monthname {
+                                        width: 100px;
+                                    }
+
+                                    a:link {
+                                        color: #fafafa;
+                                        text-decoration: none;
+                                    }
+
+                                    a:visited {
+                                        color: #fafafa;
+                                    }
+
+                                    a:active {
+                                        color: #fafafa;
+                                    }
+
+                                    a:hover {
+                                        color: #e9b64a;
+                                    }
+
+                                    h1 {
+                                        font-size: 64px;
+                                        font-weight: 200;
+                                        text-align: center;
+                                        letter-spacing: 5px;
+                                        margin-top: 20px;
+                                        margin-bottom: 0px;
+                                        color: #902936;
+                                    }
+
+                                    .blad {
+                                        background-color: rgb(92, 50, 170);
+                                        margin: 0px;
+                                        width: 30px;
+                                        height: 40px;
+                                        cursor: cell;
+                                        border-bottom: 1px solid #dadada;
+                                    }
+
+                                    .blad2 {
+                                        background-color: rgb(255, 168, 55);
+                                        margin: 0px;
+                                        width: 30px;
+                                        height: 40px;
+                                        cursor: cell;
+                                        border-bottom: 1px solid #dadada;
+                                    }
+
+                                    .days {
+                                        border: 1px solid #e9b64a;
+                                        margin: 0px;
+                                        width: 30px;
+                                        height: 40px;
+                                    }
+
+                                    .weekendchanges {
+                                        border: 1px solid #e9b64a;
+                                        margin: 0px;
+                                        width: 30px;
+                                        height: 40px;
+                                        background-color: rgb(197, 195, 70);
+                                    }
+
+                                    .urlop {
+                                        background-color: plum;
+                                    }
+
+                                    .changes {
+                                        margin: 0px;
+                                        width: 30px;
+                                        height: 40px;
+                                    }
+
+                                    table, th, td {
+                                        border-collapse: collapse;
+                                    }
+
+                                    .dniowka, .nocka, .changes, .urlop, .check, .weekendchanges {
+                                        border: 1px solid #dadada;
+                                        cursor: pointer;
+                                        color: black;
+                                        font-weight: 400;
+                                    }
+
+                                    .check {
+                                        background-color: rgb(170, 22, 22);
+                                        margin: 0px;
+                                        width: 30px;
+                                        height: 40px;
+                                        cursor: cell;
+                                    }
+
+                                    .cor {
+                                        background-color: rgb(24, 201, 92);
+                                        margin: 0px;
+                                        width: 30px;
+                                        height: 40px;
+                                        cursor: cell;
+                                    }
+
+                                    .box {
+                                        cursor: pointer;
+                                        border: 1px solid #dadada;
+                                        border-collapse: collapse;
+                                    }
+                                    </style>
+
+                                </head>
+
+                                <body>
+
+                                    <header>
+                                    
+                                        <h1>Grafik pracy</h1>
+                                    
+                                    
+                                    </header>
+                                    
+                                    <main>
+                                        
+                                        <div id=""board""></div>
+                                        
+                                    </main>
+                                    
+
+
+                                </body>
+
+                                </html>";
             WebBrowserWindow webBrowserWindow = new();
             webBrowserWindow.Show();
-            webBrowserWindow.webBrowser1.NavigateToString("<html><head></head><body>First row<br>Second row</body></html>");
+            webBrowserWindow.webBrowser1.NavigateToString(generatehtml);
             //throw new NotImplementedException();
             using (HttpClient client = new HttpClient())
             {
