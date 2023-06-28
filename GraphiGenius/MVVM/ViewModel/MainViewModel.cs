@@ -10,6 +10,10 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Text.Json;
+using Newtonsoft.Json;
+using System.Net.Http;
+using System.Diagnostics;
 
 namespace GraphiGenius.MVVM.ViewModel
 {
@@ -405,13 +409,70 @@ namespace GraphiGenius.MVVM.ViewModel
         {
             EditSettings = true;
         }
-        private void generate()
+        private async Task generate()
         {
             WebBrowserWindow webBrowserWindow = new();
             webBrowserWindow.Show();
             webBrowserWindow.webBrowser1.NavigateToString("<html><head></head><body>First row<br>Second row</body></html>");
             //throw new NotImplementedException();
+            using (HttpClient client = new HttpClient())
+            {
+                // Set the API endpoint URL
+                string apiUrl = "http://127.0.0.1:5000/generate";
+
+                // Prepare the request payload
+                ScheduleRequest requestData = new ScheduleRequest
+                {
+                    employees = new List<String>(){ "Ala", "Ola", "Ewa", "Marta", "Iza", "Kasia", "Basia", "Zosia", "Asia", "Kuba" },
+                    shifts_per_day = 2,
+                    days_per_week = 7,
+                    shift_length = 12,
+                    emp_per_shift = 2
+                };
+
+                string jsonPayload = JsonConvert.SerializeObject(requestData);
+
+                // Send the POST request and receive the response
+                HttpResponseMessage response = await client.PostAsync(apiUrl, new StringContent(jsonPayload, Encoding.UTF8, "application/json"));
+                if (response.IsSuccessStatusCode)
+                {
+                    // Read the response content
+                    string jsonResponse = await response.Content.ReadAsStringAsync();
+
+                    // Parse the JSON response into a three-dimensional array
+                    var scheduleArray = JsonConvert.DeserializeObject<ScheduleResponse>(jsonResponse);
+                    for (int x = 0; x < scheduleArray.work_schedule.Count; x++)
+                    {
+                        for (int y = 0; y < scheduleArray.work_schedule[x].Count; y++)
+                        {
+                            for (int z = 0; z < scheduleArray.work_schedule[x][y].Count; z++)
+                            {
+                                Debug.WriteLine(scheduleArray.work_schedule[x][y][z]);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    // Handle any error that occurred during the request
+                    Console.WriteLine($"HTTP Error: {response.StatusCode}");
+                }
+
+            }
         }
+        public class ScheduleResponse
+        {
+            public List<List<List<String>>>? work_schedule;
+        }
+        public class ScheduleRequest
+        {
+            public List<string>? employees;
+            public int shifts_per_day;
+            public int days_per_week;
+            public int shift_length;
+            public int emp_per_shift;
+        }
+
         #endregion
             #region ChooseView
         public void selectedEmployeeChanged()
