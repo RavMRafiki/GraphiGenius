@@ -250,7 +250,7 @@ namespace GraphiGenius.MVVM.ViewModel
         private void loadDepartment()
         {
             _departmentForm = _departmentsDatabaseAccess.loadDepartment(departmentsIds[currentDepartmentIndex]);
-            MessageBox.Show(messageBoxText: _departmentForm.Name);
+            //MessageBox.Show(messageBoxText: _departmentForm.Name);
             DepartmentNameForm = _departmentForm.Name;
             ShiftsForm= _departmentForm.Shifts;
             ShiftLenghtsForm = _departmentForm.ShiftLengths;

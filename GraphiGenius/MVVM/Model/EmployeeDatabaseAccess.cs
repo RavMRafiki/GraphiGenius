@@ -10,19 +10,17 @@ namespace GraphiGenius.MVVM.Model
 {
     class EmployeeDatabaseAccess : DatabaseAccess
     {
-        public List<int> _employees = new List<int>();
         public int[] loadEmployees(int departmentId)
         {
+            List<int> _employees = new List<int>();
             _employees = new List<int>();
             DataTable dt = new DataTable();
             dt = dbConnect($"select Id from Employee where DepartmentId={departmentId};");
-            _employees.Clear();
             for (int i = 0; i < dt.Rows.Count; i++)
             {
                 _employees.Add(Convert.ToInt32(dt.Rows[i]["Id"]));
             }
             _employees.Sort();
-            //System.Windows.MessageBox.Show(string.Join(", ", _departments));
             int[] ints = _employees.ToArray();
             return ints;
         }
@@ -31,12 +29,11 @@ namespace GraphiGenius.MVVM.Model
             DataTable dt = new DataTable();
             dt = dbConnect($"select Name from Employee where Id={id};");
             string nazwa = Convert.ToString(dt.Rows[0]["Name"]);
-            //System.Windows.MessageBox.Show(nazwa);
             return nazwa;
         }
         public void addEmployee(int departmentId)
         {
-            dbConnectAdd($"INSERT INTO Employee (Name, HourSalary, WorkingHours, DepartmentId) VALUES ('EmployeeName', 0, 0, {departmentId});");
+            dbConnectAdd($"INSERT INTO Employee (Name, HourSalary, WorkingHours, DepartmentId) VALUES ('New Employee', 0, 0, {departmentId});");
         }
         public void editEmployee(Employee employee) 
         {
