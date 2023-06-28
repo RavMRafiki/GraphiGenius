@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace GraphiGenius.MVVM.ViewModel
@@ -401,7 +402,10 @@ namespace GraphiGenius.MVVM.ViewModel
         }
         private void generate()
         {
-            throw new NotImplementedException();
+            WebBrowserWindow webBrowserWindow = new();
+            webBrowserWindow.Show();
+            webBrowserWindow.webBrowser1.NavigateToString("<html><head></head><body>First row<br>Second row</body></html>");
+            //throw new NotImplementedException();
         }
         #endregion
             #region ChooseView
