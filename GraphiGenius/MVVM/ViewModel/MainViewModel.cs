@@ -455,22 +455,10 @@ namespace GraphiGenius.MVVM.ViewModel
                 else
                 {
                     // Handle any error that occurred during the request
-                    Console.WriteLine($"HTTP Error: {response.StatusCode}");
+                    Debug.WriteLine($"HTTP Error: {response.StatusCode}");
                 }
 
             }
-        }
-        public class ScheduleResponse
-        {
-            public List<List<List<String>>>? work_schedule;
-        }
-        public class ScheduleRequest
-        {
-            public List<string>? employees;
-            public int shifts_per_day;
-            public int days_per_week;
-            public int shift_length;
-            public int emp_per_shift;
         }
 
         #endregion
