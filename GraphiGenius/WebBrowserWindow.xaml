@@ -5,8 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GraphiGenius"
         mc:Ignorable="d"
-        Title="WebBrowserWindow" Height="450" Width="800">
+        Title="WebBrowserWindow"         
+        Height="700"
+        Width="1200" >
     <Grid>
-        <WebBrowser Height="311" HorizontalAlignment="Left" Name="webBrowser1" VerticalAlignment="Top" Width="503" />
+        <WebBrowser HorizontalAlignment="Left" Name="webBrowser1" VerticalAlignment="Top"/>
     </Grid>
 </Window>

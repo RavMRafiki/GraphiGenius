@@ -250,7 +250,10 @@ namespace GraphiGenius.MVVM.ViewModel
         }
         private void loadDepartment()
         {
-            _departmentForm = _departmentsDatabaseAccess.loadDepartment(departmentsIds[currentDepartmentIndex]);
+            if(currentDepartmentIndex != -1)
+            {
+                _departmentForm = _departmentsDatabaseAccess.loadDepartment(departmentsIds[currentDepartmentIndex]);
+            }
             //MessageBox.Show(messageBoxText: _departmentForm.Name);
             DepartmentNameForm = _departmentForm.Name;
             ShiftsForm= _departmentForm.Shifts;
@@ -330,8 +333,10 @@ namespace GraphiGenius.MVVM.ViewModel
         }
         private void loadEmployee()
         {
-            _employeeForm = _employeeDatabaseAccess.loadEmployee(employeesIds[currentEmployeeIndex]);
-            //MessageBox.Show(_employeeForm.Name + _employeeForm.HourSalary.ToString() + _employeeForm.WorkingHours.ToString());
+            if(currentEmployeeIndex != -1)
+            {
+                _employeeForm = _employeeDatabaseAccess.loadEmployee(employeesIds[currentEmployeeIndex]);
+            }
 
             EmployeeNameForm = _employeeForm.Name;
             EmployeeWorkingHoursForm = _employeeForm.WorkingHours.ToString();
