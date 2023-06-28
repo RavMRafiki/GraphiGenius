@@ -10,6 +10,10 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Text.Json;
+using Newtonsoft.Json;
+using System.Net.Http;
+using System.Diagnostics;
 
 namespace GraphiGenius.MVVM.ViewModel
 {
@@ -20,6 +24,7 @@ namespace GraphiGenius.MVVM.ViewModel
         //public WindowStateViewModel WindowStateViewModel = new();
         private Model.DepartmentsDatabaseAccess _departmentsDatabaseAccess = new();
         private Model.EmployeeDatabaseAccess _employeeDatabaseAccess= new();
+        private Model.ShiftDatabaseAccess _shiftDatabaseAccess = new();
         private Model.Employee _employeeForm = new();
         private Model.Department _departmentForm = new();
         public MainViewModel()
@@ -405,22 +410,8 @@ namespace GraphiGenius.MVVM.ViewModel
         {
             EditSettings = true;
         }
+        private async Task generate()
 
-        /*
-            public int Id { get; set; }
-        public int EmployeeId { get; set; }
-        public string EmployeeName { get; set; }
-        public int IndexOfShift { get; set; }
-        public int DayInMonth { get; set; }
-        public double ShiftLengthDay { get; set; }
-        public int StartHourDay { get; set; }
-        public int StartMinuteDay { get; set; }
-        public int EndHourDay { get; set; }
-        public int EndMinuteDay { get; set; }
-        public int ShiftsDay { get; set; }
-        */
-
-        private void generate()
         {
 
            
@@ -606,7 +597,52 @@ namespace GraphiGenius.MVVM.ViewModel
             webBrowserWindow.Show();
             webBrowserWindow.webBrowser1.NavigateToString(generatehtml);
             //throw new NotImplementedException();
+            using (HttpClient client = new HttpClient())
+            {
+                // Set the API endpoint URL
+                string apiUrl = "http://127.0.0.1:5000/generate";
+
+                // Prepare the request payload
+                ScheduleRequest requestData = new ScheduleRequest
+                {
+                    employees = new List<String>(){ "Ala", "Ola", "Ewa", "Marta", "Iza", "Kasia", "Basia", "Zosia", "Asia", "Kuba" },
+                    shifts_per_day = 2,
+                    days_per_week = 7,
+                    shift_length = 12,
+                    emp_per_shift = 2
+                };
+
+                string jsonPayload = JsonConvert.SerializeObject(requestData);
+
+                // Send the POST request and receive the response
+                HttpResponseMessage response = await client.PostAsync(apiUrl, new StringContent(jsonPayload, Encoding.UTF8, "application/json"));
+                if (response.IsSuccessStatusCode)
+                {
+                    // Read the response content
+                    string jsonResponse = await response.Content.ReadAsStringAsync();
+
+                    // Parse the JSON response into a three-dimensional array
+                    var scheduleArray = JsonConvert.DeserializeObject<ScheduleResponse>(jsonResponse);
+                    for (int x = 0; x < scheduleArray.work_schedule.Count; x++)
+                    {
+                        for (int y = 0; y < scheduleArray.work_schedule[x].Count; y++)
+                        {
+                            for (int z = 0; z < scheduleArray.work_schedule[x][y].Count; z++)
+                            {
+                                Debug.WriteLine(scheduleArray.work_schedule[x][y][z]);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    // Handle any error that occurred during the request
+                    Debug.WriteLine($"HTTP Error: {response.StatusCode}");
+                }
+
+            }
         }
+
         #endregion
             #region ChooseView
         public void selectedEmployeeChanged()
