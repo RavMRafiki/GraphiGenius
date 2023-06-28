@@ -54,5 +54,28 @@ namespace GraphiGenius.MVVM.Model
 
             return result;
         }
+        public void addShift(Shift shift)
+        {
+            dbConnectAdd($"INSERT INTO Shifts " +
+                $"(EmployeeId, DayId, NumberOfShifts, DayInMonth, GraphiId)" +
+                $" VALUES ({shift.EmployeeId}, {shift.DayId}, {shift.IndexOfShift}, {shift.DayInMonth}, {shift.GraphId});");
+        }
+        public Graphi loadGraphi(string name)
+        {
+            Graphi graphi = new();
+            DataTable dt = new DataTable();
+            dt = dbConnect($"SELECT Id, Name, Month, Year FROM Graphi WHERE Name={name};");
+            graphi.Id = Convert.ToInt32(dt.Rows[0]["Id"]);
+            graphi.Name = Convert.ToString(dt.Rows[0]["Name"]);
+            graphi.Month = Convert.ToInt32(dt.Rows[0]["Month"]);
+            graphi.Year = Convert.ToInt32(dt.Rows[0]["Year"]);
+            return graphi;
+        }
+        public void addGraphi(Graphi graphi)
+        {
+            dbConnectAdd($"INSERT INTO Graphi " +
+                $"(Name, Month, Year) VALUES " +
+                $"('{graphi.Name}',{graphi.Month},{graphi.Year});");
+        }
     }
 }
