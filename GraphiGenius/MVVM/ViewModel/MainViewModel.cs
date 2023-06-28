@@ -20,6 +20,7 @@ namespace GraphiGenius.MVVM.ViewModel
         //public WindowStateViewModel WindowStateViewModel = new();
         private Model.DepartmentsDatabaseAccess _departmentsDatabaseAccess = new();
         private Model.EmployeeDatabaseAccess _employeeDatabaseAccess= new();
+        private Model.ShiftDatabaseAccess _shiftDatabaseAccess = new();
         private Model.Employee _employeeForm = new();
         private Model.Department _departmentForm = new();
         public MainViewModel()

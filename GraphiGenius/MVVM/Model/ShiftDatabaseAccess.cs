@@ -27,9 +27,12 @@ namespace GraphiGenius.MVVM.Model
                 $" d.StartMinute," +
                 $" d.EndHour," +
                 $" d.EndMinute," +
-                $" s.Shifts" +
+                $" d.Shifts" +
+                $" dep.Id" +
+                $" dep.Name" +
                 $" FROM  Shifts s " +
                 $"INNER JOIN Employee e ON s.EmployeeId = e.Id " +
+                $"INNER JOIN Department dep ON e.DepartmentId = dep.Id " +
                 $"INNER JOIN Day d ON s.DayId = d.Id " +
                 $"INNER JOIN Graphi g ON s.GraphiId = g.Id " +
                 $"WHERE g.Name like {graphiName};");
@@ -40,6 +43,8 @@ namespace GraphiGenius.MVVM.Model
                 shift.Id = Convert.ToInt32(dt.Rows[i]["ShiftId"]);
                 shift.EmployeeId = Convert.ToInt32(dt.Rows[0]["EmployeeId"]);
                 shift.EmployeeName = Convert.ToString(dt.Rows[0]["EmployeeName"]);
+                shift.DepartmentId = Convert.ToInt32(dt.Rows[0]["Id"]);
+                shift.DepartmentName = Convert.ToString(dt.Rows[0]["Name"]);
                 shift.IndexOfShift = Convert.ToInt32(dt.Rows[0]["NumberOfShifts"]);
                 shift.DayInMonth = Convert.ToInt32(dt.Rows[0]["DayInMonth"]);
                 shift.ShiftLengthDay = Convert.ToInt32(dt.Rows[0]["ShiftLength"]);

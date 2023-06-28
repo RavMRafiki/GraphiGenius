@@ -11,6 +11,8 @@ namespace GraphiGenius.MVVM.Model
         public int Id { get; set; }
         public int EmployeeId { get; set; }
         public string EmployeeName { get; set; }
+        public int DepartmentId { get; set; }
+        public string DepartmentName { get; set; }
         public int IndexOfShift { get; set; }
         public int DayInMonth { get; set; }
         public double ShiftLengthDay { get; set; }
