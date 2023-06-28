@@ -27,7 +27,6 @@ namespace GraphiGenius.MVVM.Model
                     cmd.CommandText = command;
                     ad = new SQLiteDataAdapter(cmd);
                     ad.Fill(dt);
-                    //MessageBox.Show(dt.ToString());
                 }
                 catch (SQLiteException ex)
                 {
