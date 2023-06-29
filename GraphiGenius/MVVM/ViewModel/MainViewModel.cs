@@ -51,7 +51,11 @@ namespace GraphiGenius.MVVM.ViewModel
             Employees.Clear();
             if(currentDepartmentIndex != -1)
             {
-                employeesIds = _employeeDatabaseAccess.loadEmployees(departmentsIds[currentDepartmentIndex]);
+                if (departmentsIds.Length > 0)
+                {
+                    employeesIds = _employeeDatabaseAccess.loadEmployees(departmentsIds[currentDepartmentIndex]);
+                }
+                else return;
             }
             
             for (int i = 0; i < employeesIds.Length; i++)
@@ -436,7 +440,7 @@ namespace GraphiGenius.MVVM.ViewModel
                 };
                 Graphi grafik = new Graphi
                 {
-                    Name = "grafik",
+                    Name = "grafik2",
                     Month = 6,
                     Year = 2023
                 };
@@ -453,14 +457,15 @@ namespace GraphiGenius.MVVM.ViewModel
                                 EmployeeId = scheduleArray.work_schedule[x][y][z],
                                 DayId = x,
                                 IndexOfShift = y,
-                                DayInMonth = x,
+                                DayInMonth = x + (7- ints[i][1])*(x/7),
                                 GraphId = _shiftDatabaseAccess.loadGraphi(grafik.Name).Id
                             };
                             _shiftDatabaseAccess.addShift(shift);
                         }
                     }
                 }
-                
+               
+
             }
             
             

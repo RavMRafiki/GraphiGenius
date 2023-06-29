@@ -22,7 +22,6 @@ namespace GraphiGenius.MVVM.Model
                 _employees.Add(Convert.ToInt32(dt.Rows[i]["Id"]));
             }
             _employees.Sort();
-            Debug.WriteLine("jdfjdskf" + _employees[0]);
             int[] ints = _employees.ToArray();
             return ints;
         }
