@@ -26,6 +26,33 @@ namespace GraphiGenius.MVVM.Model
             int[] ints = _departments.ToArray();
             return ints;
         }
+        public List<List<int>> DepartmentInfo()
+        {
+            DataTable dt = new DataTable();
+            int shifts_per_day = 0;
+            int days_per_week = 0;
+            int shift_length = 0;
+            List<List<int>> ints = new List<List<int>>();
+            dt = dbConnect($"SELECT Department.id, d1.ShiftLength AS SL1, d1.Shifts AS SH1, d2.ShiftLength AS SL2, d2.Shifts AS SH2, d3.ShiftLength AS SL3, d3.Shifts AS SH3, d4.ShiftLength AS SL4, d4.Shifts AS SH4, d5.ShiftLength AS SL5, d5.Shifts AS SH5, d6.ShiftLength AS SL6, d6.Shifts AS SH6, d7.ShiftLength AS SL7, d7.Shifts AS SH7\r\nFROM Department, Day as d1, Day as d2, Day as d3, Day as d4, Day as d5, Day as d6, Day as d7\r\nWHERE\r\nDepartment.Id = d1.DepartmentId AND Department.Id = d2.DepartmentId AND Department.Id = d3.DepartmentId AND Department.Id = d4.DepartmentId AND Department.Id = d5.DepartmentId AND Department.Id = d6.DepartmentId AND Department.Id = d7.DepartmentId\r\nAND d1.DayOfWeek = 0 AND d2.DayOfWeek = 1 AND d3.DayOfWeek = 2 AND d4.DayOfWeek = 3 AND d5.DayOfWeek = 4 AND d6.DayOfWeek = 5 AND d7.DayOfWeek = 6;");
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                shifts_per_day = Convert.ToInt32(dt.Rows[i]["SH1"]);
+                if(Convert.ToInt32(dt.Rows[i]["SH1"]) > 0) days_per_week++;
+                if (Convert.ToInt32(dt.Rows[i]["SH2"]) > 0) days_per_week++;
+                if (Convert.ToInt32(dt.Rows[i]["SH3"]) > 0) days_per_week++;
+                if (Convert.ToInt32(dt.Rows[i]["SH4"]) > 0) days_per_week++;
+                if (Convert.ToInt32(dt.Rows[i]["SH5"]) > 0) days_per_week++;
+                if (Convert.ToInt32(dt.Rows[i]["SH6"]) > 0) days_per_week++;
+                if (Convert.ToInt32(dt.Rows[i]["SH7"]) > 0) days_per_week++;
+                shift_length = Convert.ToInt32(dt.Rows[i]["SL1"]);
+                ints.Add(new List<int>());
+                ints[i].Add(shifts_per_day);
+                ints[i].Add(days_per_week);
+                ints[i].Add(shift_length);
+                ints[i].Add(Convert.ToInt32(dt.Rows[i]["Id"]));
+            }
+            return ints;
+        }
         public string departmentName(int id)
         {
             DataTable dt = new DataTable();

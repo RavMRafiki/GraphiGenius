@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,6 +22,7 @@ namespace GraphiGenius.MVVM.Model
                 _employees.Add(Convert.ToInt32(dt.Rows[i]["Id"]));
             }
             _employees.Sort();
+            Debug.WriteLine("jdfjdskf" + _employees[0]);
             int[] ints = _employees.ToArray();
             return ints;
         }

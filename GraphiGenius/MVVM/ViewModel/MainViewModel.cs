@@ -14,6 +14,8 @@ using System.Text.Json;
 using Newtonsoft.Json;
 using System.Net.Http;
 using System.Diagnostics;
+using System.Data;
+using System.Xml.Linq;
 
 namespace GraphiGenius.MVVM.ViewModel
 {
@@ -27,6 +29,7 @@ namespace GraphiGenius.MVVM.ViewModel
         private Model.ShiftDatabaseAccess _shiftDatabaseAccess = new();
         private Model.Employee _employeeForm = new();
         private Model.Department _departmentForm = new();
+        private Model.DayDatabaseAccess _daydatabaseaccess = new();
         public MainViewModel()
         {
             _reloadDepartments();
@@ -46,7 +49,11 @@ namespace GraphiGenius.MVVM.ViewModel
         private void _reloadEmployees()
         {
             Employees.Clear();
-            employeesIds = _employeeDatabaseAccess.loadEmployees(departmentsIds[currentDepartmentIndex]);
+            if(currentDepartmentIndex != -1)
+            {
+                employeesIds = _employeeDatabaseAccess.loadEmployees(departmentsIds[currentDepartmentIndex]);
+            }
+            
             for (int i = 0; i < employeesIds.Length; i++)
             {
                 Employees.Add(_employeeDatabaseAccess.employeeName(employeesIds[i]));
@@ -415,51 +422,48 @@ namespace GraphiGenius.MVVM.ViewModel
             WebBrowserWindow webBrowserWindow = new();
             webBrowserWindow.Show();
             webBrowserWindow.webBrowser1.NavigateToString("<html><head></head><body>First row<br>Second row</body></html>");
-            //throw new NotImplementedException();
-            using (HttpClient client = new HttpClient())
+            List<List<int>> ints = _departmentsDatabaseAccess.DepartmentInfo();
+            for(int i=0; i<ints.Count; i++)
             {
-                // Set the API endpoint URL
-                string apiUrl = "http://127.0.0.1:5000/generate";
-
-                // Prepare the request payload
+                var emp_temp = _employeeDatabaseAccess.loadEmployees(ints[i][3]);
                 ScheduleRequest requestData = new ScheduleRequest
                 {
-                    employees = new List<String>(){ "Ala", "Ola", "Ewa", "Marta", "Iza", "Kasia", "Basia", "Zosia", "Asia", "Kuba" },
-                    shifts_per_day = 2,
-                    days_per_week = 7,
-                    shift_length = 12,
-                    emp_per_shift = 2
+                    employees = new List<int>(emp_temp),
+                    shifts_per_day = ints[i][0],
+                    days_per_week = ints[i][1],
+                    shift_length = ints[i][2],
+                    emp_per_shift = _daydatabaseaccess.employeers_per_shift(ints[i][3], ints[i][2])
                 };
-
-                string jsonPayload = JsonConvert.SerializeObject(requestData);
-
-                // Send the POST request and receive the response
-                HttpResponseMessage response = await client.PostAsync(apiUrl, new StringContent(jsonPayload, Encoding.UTF8, "application/json"));
-                if (response.IsSuccessStatusCode)
+                Graphi grafik = new Graphi
                 {
-                    // Read the response content
-                    string jsonResponse = await response.Content.ReadAsStringAsync();
-
-                    // Parse the JSON response into a three-dimensional array
-                    var scheduleArray = JsonConvert.DeserializeObject<ScheduleResponse>(jsonResponse);
-                    for (int x = 0; x < scheduleArray.work_schedule.Count; x++)
+                    Name = "grafik",
+                    Month = 6,
+                    Year = 2023
+                };
+                _shiftDatabaseAccess.addGraphi(grafik);
+                var scheduleArray = await SendToApi.send_to_api(requestData);
+                for (int x = 0; x < scheduleArray.work_schedule.Count; x++)
+                {
+                    for (int y = 0; y < scheduleArray.work_schedule[x].Count; y++)
                     {
-                        for (int y = 0; y < scheduleArray.work_schedule[x].Count; y++)
+                        for (int z = 0; z < scheduleArray.work_schedule[x][y].Count; z++)
                         {
-                            for (int z = 0; z < scheduleArray.work_schedule[x][y].Count; z++)
+                            Shift shift = new Shift
                             {
-                                Debug.WriteLine(scheduleArray.work_schedule[x][y][z]);
-                            }
+                                EmployeeId = scheduleArray.work_schedule[x][y][z],
+                                DayId = x,
+                                IndexOfShift = y,
+                                DayInMonth = x,
+                                GraphId = _shiftDatabaseAccess.loadGraphi(grafik.Name).Id
+                            };
+                            _shiftDatabaseAccess.addShift(shift);
                         }
                     }
                 }
-                else
-                {
-                    // Handle any error that occurred during the request
-                    Debug.WriteLine($"HTTP Error: {response.StatusCode}");
-                }
-
+                
             }
+            
+            
         }
 
         #endregion

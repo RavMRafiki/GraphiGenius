@@ -41,18 +41,18 @@ namespace GraphiGenius.MVVM.Model
             {
                 Shift shift = new();
                 shift.Id = Convert.ToInt32(dt.Rows[i]["ShiftId"]);
-                shift.EmployeeId = Convert.ToInt32(dt.Rows[0]["EmployeeId"]);
-                shift.EmployeeName = Convert.ToString(dt.Rows[0]["EmployeeName"]);
-                shift.DepartmentId = Convert.ToInt32(dt.Rows[0]["Id"]);
-                shift.DepartmentName = Convert.ToString(dt.Rows[0]["Name"]);
-                shift.IndexOfShift = Convert.ToInt32(dt.Rows[0]["NumberOfShifts"]);
-                shift.DayInMonth = Convert.ToInt32(dt.Rows[0]["DayInMonth"]);
-                shift.ShiftLengthDay = Convert.ToInt32(dt.Rows[0]["ShiftLength"]);
-                shift.StartHourDay = Convert.ToInt32(dt.Rows[0]["StartHour"]);
-                shift.StartMinuteDay = Convert.ToInt32(dt.Rows[0]["StartMinute"]);
-                shift.EndHourDay = Convert.ToInt32(dt.Rows[0]["EndHour"]);
-                shift.EndMinuteDay = Convert.ToInt32(dt.Rows[0]["EndMinute"]);
-                shift.ShiftsDay = Convert.ToInt32(dt.Rows[0]["Shifts"]);
+                shift.EmployeeId = Convert.ToInt32(dt.Rows[i]["EmployeeId"]);
+                shift.EmployeeName = Convert.ToString(dt.Rows[i]["EmployeeName"]);
+                shift.DepartmentId = Convert.ToInt32(dt.Rows[i]["Id"]);
+                shift.DepartmentName = Convert.ToString(dt.Rows[i]["Name"]);
+                shift.IndexOfShift = Convert.ToInt32(dt.Rows[i]["NumberOfShifts"]);
+                shift.DayInMonth = Convert.ToInt32(dt.Rows[i]["DayInMonth"]);
+                shift.ShiftLengthDay = Convert.ToInt32(dt.Rows[i]["ShiftLength"]);
+                shift.StartHourDay = Convert.ToInt32(dt.Rows[i]["StartHour"]);
+                shift.StartMinuteDay = Convert.ToInt32(dt.Rows[i]["StartMinute"]);
+                shift.EndHourDay = Convert.ToInt32(dt.Rows[i]["EndHour"]);
+                shift.EndMinuteDay = Convert.ToInt32(dt.Rows[i]["EndMinute"]);
+                shift.ShiftsDay = Convert.ToInt32(dt.Rows[i]["Shifts"]);
                 result.Add( shift );
             }
 
