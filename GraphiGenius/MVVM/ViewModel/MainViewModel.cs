@@ -368,7 +368,40 @@ namespace GraphiGenius.MVVM.ViewModel
 
         }
         #endregion
-            #region Generate
+        #region Generate
+        private string generateNameForm;
+        public string GenerateNameForm
+        {
+            get { return generateNameForm; }
+            set
+            {
+                generateNameForm = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(GenerateNameForm)));
+
+            }
+        }
+        private string generateMonthForm;
+        public string GenerateMonthForm
+        {
+            get { return generateMonthForm; }
+            set
+            {
+                generateMonthForm = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(GenerateMonthForm)));
+
+            }
+        }
+        private string generateYearForm;
+        public string GenerateYearForm
+        {
+            get { return generateYearForm; }
+            set
+            {
+                generateYearForm = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(GenerateYearForm)));
+
+            }
+        }
         private ICommand _generatesettings;
 
         public ICommand GenerateSettings
@@ -455,6 +488,7 @@ namespace GraphiGenius.MVVM.ViewModel
         private async Task generate()
 
         {
+            _shiftDatabaseAccess.addGraphi(new Graphi(GenerateNameForm,Convert.ToInt32( GenerateMonthForm), Convert.ToInt32(GenerateYearForm)));
 
             /*
             //throw new NotImplementedException();
