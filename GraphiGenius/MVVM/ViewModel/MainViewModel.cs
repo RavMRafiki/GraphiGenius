@@ -115,10 +115,10 @@ namespace GraphiGenius.MVVM.ViewModel
         private ObservableCollection<int> startHoursForm;
         public ObservableCollection<int> StartHoursForm
         {
-            get { return shiftLenghtsForm; }
+            get { return startHoursForm; }
             set
             {
-                shiftLenghtsForm = value;
+                startHoursForm = value;
                 _departmentForm.StartHours = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(StartHoursForm)));
             }
