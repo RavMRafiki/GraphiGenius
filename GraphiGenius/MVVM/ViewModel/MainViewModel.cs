@@ -15,6 +15,7 @@ using Newtonsoft.Json;
 using System.Net.Http;
 using System.Diagnostics;
 
+
 namespace GraphiGenius.MVVM.ViewModel
 {
     class MainViewModel : INotifyPropertyChanged
@@ -410,15 +411,106 @@ namespace GraphiGenius.MVVM.ViewModel
         {
             EditSettings = true;
         }
+
+        public string GenerateScheduleTable(List<Shift> shifts)
+        {
+            StringBuilder tableBuilder = new StringBuilder();
+
+           
+            tableBuilder.AppendLine("<table>");
+            tableBuilder.AppendLine("<tr>");
+            tableBuilder.AppendLine("<th>Employee</th>");
+            tableBuilder.AppendLine("<th>Department</th>");
+            tableBuilder.AppendLine("<th>Shift Index</th>");
+            tableBuilder.AppendLine("<th>Day in Month</th>");
+            tableBuilder.AppendLine("<th>Shift Length</th>");
+            tableBuilder.AppendLine("<th>Start Time</th>");
+            tableBuilder.AppendLine("<th>End Time</th>");
+            tableBuilder.AppendLine("<th>Shifts</th>");
+            tableBuilder.AppendLine("</tr>");
+
+            
+            foreach (Shift shift in shifts)
+            {
+                tableBuilder.AppendLine("<tr>");
+                tableBuilder.AppendLine($"<td>{shift.EmployeeName}</td>");
+                tableBuilder.AppendLine($"<td>{shift.DepartmentName}</td>");
+                tableBuilder.AppendLine($"<td>{shift.IndexOfShift}</td>");
+                tableBuilder.AppendLine($"<td>{shift.DayInMonth}</td>");
+                tableBuilder.AppendLine($"<td>{shift.ShiftLengthDay}</td>");
+                tableBuilder.AppendLine($"<td>{shift.StartHourDay}:{shift.StartMinuteDay}</td>");
+                tableBuilder.AppendLine($"<td>{shift.EndHourDay}:{shift.EndMinuteDay}</td>");
+                tableBuilder.AppendLine($"<td>{shift.ShiftsDay}</td>");
+                tableBuilder.AppendLine("</tr>");
+            }
+
+            // Zakończenie tabeli
+            tableBuilder.AppendLine("</table>");
+
+            return tableBuilder.ToString();
+        }
+
+
+
         private async Task generate()
 
         {
 
-           
-           
+            /*
+            //throw new NotImplementedException();
+            using (HttpClient client = new HttpClient())
+            {
+                // Set the API endpoint URL
+                string apiUrl = "http://127.0.0.1:5000/generate";
+
+                // Prepare the request payload
+                ScheduleRequest requestData = new ScheduleRequest
+                {
+                    employees = new List<String>(){ "Ala", "Ola", "Ewa", "Marta", "Iza", "Kasia", "Basia", "Zosia", "Asia", "Kuba" },
+                    shifts_per_day = 2,
+                    days_per_week = 7,
+                    shift_length = 12,
+                    emp_per_shift = 2
+                };
+
+                string jsonPayload = JsonConvert.SerializeObject(requestData);
+
+                // Send the POST request and receive the response
+                HttpResponseMessage response = await client.PostAsync(apiUrl, new StringContent(jsonPayload, Encoding.UTF8, "application/json"));
+                if (response.IsSuccessStatusCode)
+                {
+                    // Read the response content
+                    string jsonResponse = await response.Content.ReadAsStringAsync();
+
+                    // Parse the JSON response into a three-dimensional array
+                    var scheduleArray = JsonConvert.DeserializeObject<ScheduleResponse>(jsonResponse);
+                    for (int x = 0; x < scheduleArray.work_schedule.Count; x++)
+                    {
+                        for (int y = 0; y < scheduleArray.work_schedule[x].Count; y++)
+                        {
+                            for (int z = 0; z < scheduleArray.work_schedule[x][y].Count; z++)
+                            {
+                                Debug.WriteLine(scheduleArray.work_schedule[x][y][z]);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    // Handle any error that occurred during the request
+                    Debug.WriteLine($"HTTP Error: {response.StatusCode}");
+                }
+
+            }
+            */
+
+            ShiftDatabaseAccess shiftDatabaseAccess = new ShiftDatabaseAccess();
+            List<Shift> shifts = shiftDatabaseAccess.loadShifts();
 
 
-           string generatehtml = @"<!DOCTYPE html>
+
+
+            string generatehtml = @"<!DOCTYPE html>
                                 <html lang=""pl"">
                                 <head>
 
@@ -584,7 +676,9 @@ namespace GraphiGenius.MVVM.ViewModel
                                     
                                     <main>
                                         
-                                        <div id=""board""></div>
+                                        <div id=""board"">
+                                            " + GenerateScheduleTable(shifts) + @"
+                                        </div>
                                         
                                     </main>
                                     
@@ -593,54 +687,12 @@ namespace GraphiGenius.MVVM.ViewModel
                                 </body>
 
                                 </html>";
+
             WebBrowserWindow webBrowserWindow = new();
             webBrowserWindow.Show();
             webBrowserWindow.webBrowser1.NavigateToString(generatehtml);
-            //throw new NotImplementedException();
-            using (HttpClient client = new HttpClient())
-            {
-                // Set the API endpoint URL
-                string apiUrl = "http://127.0.0.1:5000/generate";
 
-                // Prepare the request payload
-                ScheduleRequest requestData = new ScheduleRequest
-                {
-                    employees = new List<String>(){ "Ala", "Ola", "Ewa", "Marta", "Iza", "Kasia", "Basia", "Zosia", "Asia", "Kuba" },
-                    shifts_per_day = 2,
-                    days_per_week = 7,
-                    shift_length = 12,
-                    emp_per_shift = 2
-                };
 
-                string jsonPayload = JsonConvert.SerializeObject(requestData);
-
-                // Send the POST request and receive the response
-                HttpResponseMessage response = await client.PostAsync(apiUrl, new StringContent(jsonPayload, Encoding.UTF8, "application/json"));
-                if (response.IsSuccessStatusCode)
-                {
-                    // Read the response content
-                    string jsonResponse = await response.Content.ReadAsStringAsync();
-
-                    // Parse the JSON response into a three-dimensional array
-                    var scheduleArray = JsonConvert.DeserializeObject<ScheduleResponse>(jsonResponse);
-                    for (int x = 0; x < scheduleArray.work_schedule.Count; x++)
-                    {
-                        for (int y = 0; y < scheduleArray.work_schedule[x].Count; y++)
-                        {
-                            for (int z = 0; z < scheduleArray.work_schedule[x][y].Count; z++)
-                            {
-                                Debug.WriteLine(scheduleArray.work_schedule[x][y][z]);
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    // Handle any error that occurred during the request
-                    Debug.WriteLine($"HTTP Error: {response.StatusCode}");
-                }
-
-            }
         }
 
         #endregion
