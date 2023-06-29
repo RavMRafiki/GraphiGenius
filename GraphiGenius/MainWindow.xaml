@@ -293,9 +293,11 @@
                     </TextBlock>
 
                     <Label  Foreground="White">Graphic Name</Label>
-                    <TextBox></TextBox>
+                    <TextBox Text="{Binding GenerateNameForm}"></TextBox>
                     <Label  Foreground="White">Month Number</Label>
-                    <TextBox PreviewTextInput="PreviewNumericInputMonths"></TextBox>
+                    <TextBox Text="{Binding GenerateMonthForm}" PreviewTextInput="PreviewNumericInputMonths"></TextBox>
+                    <Label  Foreground="White">Year</Label>
+                    <TextBox Text="{Binding GenerateYearForm}" PreviewTextInput="PreviewNumericInput"></TextBox>
 
                     <Button Command="{Binding Generate}" Style="{StaticResource ButtonStyle}">Generate</Button>
                     <StackPanel.Style>
