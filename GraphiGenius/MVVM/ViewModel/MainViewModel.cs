@@ -30,8 +30,12 @@ namespace GraphiGenius.MVVM.ViewModel
         private Model.Department _departmentForm = new();
         public MainViewModel()
         {
+            try
+            {
             _reloadDepartments();
             _reloadEmployees();
+            }
+            catch { }
         }  
         private int[] departmentsIds;
         private void _reloadDepartments()
@@ -54,7 +58,7 @@ namespace GraphiGenius.MVVM.ViewModel
             }
 
         }
-        private int currentDepartmentIndex = 0;
+        private int currentDepartmentIndex = -1;
         public int CurrentDepartmentIndex
         {
             get { return currentDepartmentIndex; }
@@ -157,7 +161,7 @@ namespace GraphiGenius.MVVM.ViewModel
             }
         }
 
-        private int currentEmployeeIndex = 0;
+        private int currentEmployeeIndex = -1;
         public int CurrentEmployeeIndex
         {
             get { return currentEmployeeIndex; }
