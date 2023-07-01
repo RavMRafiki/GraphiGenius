@@ -14,6 +14,8 @@ using System.Text.Json;
 using Newtonsoft.Json;
 using System.Net.Http;
 using System.Diagnostics;
+using System.Data;
+using System.Xml.Linq;
 
 
 namespace GraphiGenius.MVVM.ViewModel
@@ -28,6 +30,8 @@ namespace GraphiGenius.MVVM.ViewModel
         private Model.ShiftDatabaseAccess _shiftDatabaseAccess = new();
         private Model.Employee _employeeForm = new();
         private Model.Department _departmentForm = new();
+        private Model.DayDatabaseAccess _daydatabaseaccess = new();
+        private Model.GenerateShift _generateshift = new();
         public MainViewModel()
         {
             try
@@ -51,7 +55,15 @@ namespace GraphiGenius.MVVM.ViewModel
         private void _reloadEmployees()
         {
             Employees.Clear();
-            employeesIds = _employeeDatabaseAccess.loadEmployees(departmentsIds[currentDepartmentIndex]);
+            if(currentDepartmentIndex != -1)
+            {
+                if (departmentsIds.Length > 0)
+                {
+                    employeesIds = _employeeDatabaseAccess.loadEmployees(departmentsIds[currentDepartmentIndex]);
+                }
+                else return;
+            }
+            
             for (int i = 0; i < employeesIds.Length; i++)
             {
                 Employees.Add(_employeeDatabaseAccess.employeeName(employeesIds[i]));
@@ -448,6 +460,24 @@ namespace GraphiGenius.MVVM.ViewModel
         {
             EditSettings = true;
         }
+        private int _monthNumber;
+        public int MonthNumber
+        {
+            get => _monthNumber;
+            set
+            {
+                _monthNumber = Convert.ToInt32(value);
+            }
+        }
+        private string _graphiName;
+        public string GraphiName
+        {
+            get => _graphiName;
+            set
+            {
+                _graphiName = value;
+            }
+        }
 
         public string GenerateScheduleTable(List<Shift> shifts)
         {
@@ -487,66 +517,13 @@ namespace GraphiGenius.MVVM.ViewModel
             return tableBuilder.ToString();
         }
 
-
-
         private async Task generate()
 
         {
-            _shiftDatabaseAccess.addGraphi(new Graphi(GenerateNameForm,Convert.ToInt32( GenerateMonthForm), Convert.ToInt32(GenerateYearForm)));
-
-            /*
-            //throw new NotImplementedException();
-            using (HttpClient client = new HttpClient())
-            {
-                // Set the API endpoint URL
-                string apiUrl = "http://127.0.0.1:5000/generate";
-
-                // Prepare the request payload
-                ScheduleRequest requestData = new ScheduleRequest
-                {
-                    employees = new List<String>(){ "Ala", "Ola", "Ewa", "Marta", "Iza", "Kasia", "Basia", "Zosia", "Asia", "Kuba" },
-                    shifts_per_day = 2,
-                    days_per_week = 7,
-                    shift_length = 12,
-                    emp_per_shift = 2
-                };
-
-                string jsonPayload = JsonConvert.SerializeObject(requestData);
-
-                // Send the POST request and receive the response
-                HttpResponseMessage response = await client.PostAsync(apiUrl, new StringContent(jsonPayload, Encoding.UTF8, "application/json"));
-                if (response.IsSuccessStatusCode)
-                {
-                    // Read the response content
-                    string jsonResponse = await response.Content.ReadAsStringAsync();
-
-                    // Parse the JSON response into a three-dimensional array
-                    var scheduleArray = JsonConvert.DeserializeObject<ScheduleResponse>(jsonResponse);
-                    for (int x = 0; x < scheduleArray.work_schedule.Count; x++)
-                    {
-                        for (int y = 0; y < scheduleArray.work_schedule[x].Count; y++)
-                        {
-                            for (int z = 0; z < scheduleArray.work_schedule[x][y].Count; z++)
-                            {
-                                Debug.WriteLine(scheduleArray.work_schedule[x][y][z]);
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    // Handle any error that occurred during the request
-                    Debug.WriteLine($"HTTP Error: {response.StatusCode}");
-                }
-
-            }
-            */
+            await _generateshift.generate_shift(GraphiName, MonthNumber);
 
             ShiftDatabaseAccess shiftDatabaseAccess = new ShiftDatabaseAccess();
             List<Shift> shifts = shiftDatabaseAccess.loadShifts();
-
-
-
 
             string generatehtml = @"<!DOCTYPE html>
                                 <html lang=""pl"">
@@ -729,8 +706,6 @@ namespace GraphiGenius.MVVM.ViewModel
             WebBrowserWindow webBrowserWindow = new();
             webBrowserWindow.Show();
             webBrowserWindow.webBrowser1.NavigateToString(generatehtml);
-
-
         }
 
         #endregion

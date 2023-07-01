@@ -8,6 +8,6 @@ namespace GraphiGenius.MVVM.Model
 {
     public class ScheduleResponse
     {
-        public List<List<List<String>>>? work_schedule;
+        public List<List<List<int>>>? work_schedule;
     }
 }

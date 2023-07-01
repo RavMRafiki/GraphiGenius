@@ -299,9 +299,10 @@
                     </TextBlock>
 
                     <Label  Foreground="White">Graphic Name</Label>
-                    <TextBox Text="{Binding GenerateNameForm}"></TextBox>
+
+                    <TextBox Text="{Binding GraphiName}"></TextBox>
                     <Label  Foreground="White">Month Number</Label>
-                    <TextBox Text="{Binding GenerateMonthForm}" PreviewTextInput="PreviewNumericInputMonths"></TextBox>
+                    <TextBox Text="{Binding MonthNumber}" PreviewTextInput="PreviewNumericInputMonths"></TextBox>
                     <Label  Foreground="White">Year</Label>
                     <TextBox Text="{Binding GenerateYearForm}" PreviewTextInput="PreviewNumericInput"></TextBox>
 

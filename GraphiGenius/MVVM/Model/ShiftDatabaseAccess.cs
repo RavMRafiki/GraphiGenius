@@ -39,7 +39,6 @@ namespace GraphiGenius.MVVM.Model
                 $"INNER JOIN Day d ON s.DayId = d.Id " +
                 $"INNER JOIN Graphi g ON s.GraphiId = g.Id " +
                 $"WHERE g.Name like \"{graphiName}\";");
-                Console.WriteLine(dt);
                 for (int i = 0; i < dt.Rows.Count; i++)
                 {
                     Shift shift = new();
@@ -64,9 +63,6 @@ namespace GraphiGenius.MVVM.Model
             }
             catch(Exception ex)
             {
-                Debug.WriteLine("********************Dane nieeee zostały pomyślnie wstawione do bazy danych.**************************");
-                Console.WriteLine("An error occurred: " + ex.Message);
-                Console.WriteLine("********************Dane nieeee zostały pomyślnie wstawione do bazy danych.**************************");
                 return null;
             }
         }
@@ -80,7 +76,7 @@ namespace GraphiGenius.MVVM.Model
         {
             Graphi graphi = new();
             DataTable dt = new DataTable();
-            dt = dbConnect($"SELECT Id, Name, Month, Year FROM Graphi WHERE Name={name};");
+            dt = dbConnect($"SELECT Id, Name, Month, Year FROM Graphi WHERE Name=\"{name}\";");
             graphi.Id = Convert.ToInt32(dt.Rows[0]["Id"]);
             graphi.Name = Convert.ToString(dt.Rows[0]["Name"]);
             graphi.Month = Convert.ToInt32(dt.Rows[0]["Month"]);

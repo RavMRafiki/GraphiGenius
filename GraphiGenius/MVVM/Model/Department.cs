@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using System.Data;
 
 namespace GraphiGenius.MVVM.Model
 {
@@ -19,5 +20,6 @@ namespace GraphiGenius.MVVM.Model
         public ObservableCollection<int> EndHours { get; set; }
         public ObservableCollection<int> EndMinutes { get; set; }
         public ICollection<Employee> Employee { get; private set;} = new ObservableCollection<Employee>();
+        
     }
 }
