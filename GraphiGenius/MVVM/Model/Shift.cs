@@ -1,8 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics.Metrics;
+using System.Drawing;
 using System.Linq;
+using System.Reflection.Metadata;
+using System.Reflection;
+using System.Runtime.ConstrainedExecution;
+using System.Security.Policy;
 using System.Text;
+using System.Threading.Channels;
 using System.Threading.Tasks;
+using System.Windows;
+using static System.Net.Mime.MediaTypeNames;
+using System.Windows.Controls;
+using System.Windows.Media.Animation;
+using System.Windows.Media.Media3D;
+using System.Windows.Media;
 
 namespace GraphiGenius.MVVM.Model
 {
@@ -21,8 +35,12 @@ namespace GraphiGenius.MVVM.Model
         public int EndHourDay { get; set; }
         public int EndMinuteDay { get; set; }
         public int ShiftsDay { get; set; }
+
         //Only for adding to DB
         public int GraphId { get; set; }
         public int DayId { get; set; }
+
+
+        
     }
 }

@@ -28,6 +28,12 @@
             <Setter Property="FontSize" Value="19"/>
             <Setter Property="Foreground" Value="White"/>
         </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="#3c3b52"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="18"/>
+        </Style>
     </Window.Resources>
 
     <Window.DataContext>
@@ -182,7 +188,7 @@
                         <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
                             <TextBox MinWidth="40" TextAlignment="Right" PreviewTextInput="PreviewNumericInputHours" Text="{Binding StartHoursForm[0]}"></TextBox>
                             <Label>:</Label>
-                            <TextBox MinWidth="40" TextAlignment="Left" PreviewTextInput="PreviewNumericInputMinutes" Text="{Binding StartHoursForm[0]}"></TextBox>
+                            <TextBox MinWidth="40" TextAlignment="Left" PreviewTextInput="PreviewNumericInputMinutes" Text="{Binding StartMinutesForm[0]}"></TextBox>
                         </StackPanel>
                         <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
                             <TextBox MinWidth="40" TextAlignment="Right" PreviewTextInput="PreviewNumericInputHours" Text="{Binding EndHoursForm[0]}"></TextBox>
@@ -293,9 +299,12 @@
                     </TextBlock>
 
                     <Label  Foreground="White">Graphic Name</Label>
+
                     <TextBox Text="{Binding GraphiName}"></TextBox>
                     <Label  Foreground="White">Month Number</Label>
                     <TextBox Text="{Binding MonthNumber}" PreviewTextInput="PreviewNumericInputMonths"></TextBox>
+                    <Label  Foreground="White">Year</Label>
+                    <TextBox Text="{Binding GenerateYearForm}" PreviewTextInput="PreviewNumericInput"></TextBox>
 
                     <Button Command="{Binding Generate}" Style="{StaticResource ButtonStyle}">Generate</Button>
                     <StackPanel.Style>

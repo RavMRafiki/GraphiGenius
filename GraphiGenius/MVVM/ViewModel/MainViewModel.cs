@@ -17,6 +17,7 @@ using System.Diagnostics;
 using System.Data;
 using System.Xml.Linq;
 
+
 namespace GraphiGenius.MVVM.ViewModel
 {
     class MainViewModel : INotifyPropertyChanged
@@ -33,8 +34,12 @@ namespace GraphiGenius.MVVM.ViewModel
         private Model.GenerateShift _generateshift = new();
         public MainViewModel()
         {
+            try
+            {
             _reloadDepartments();
             _reloadEmployees();
+            }
+            catch { }
         }  
         private int[] departmentsIds;
         private void _reloadDepartments()
@@ -65,7 +70,7 @@ namespace GraphiGenius.MVVM.ViewModel
             }
 
         }
-        private int currentDepartmentIndex = 0;
+        private int currentDepartmentIndex = -1;
         public int CurrentDepartmentIndex
         {
             get { return currentDepartmentIndex; }
@@ -126,10 +131,10 @@ namespace GraphiGenius.MVVM.ViewModel
         private ObservableCollection<int> startHoursForm;
         public ObservableCollection<int> StartHoursForm
         {
-            get { return shiftLenghtsForm; }
+            get { return startHoursForm; }
             set
             {
-                shiftLenghtsForm = value;
+                startHoursForm = value;
                 _departmentForm.StartHours = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(StartHoursForm)));
             }
@@ -168,7 +173,7 @@ namespace GraphiGenius.MVVM.ViewModel
             }
         }
 
-        private int currentEmployeeIndex = 0;
+        private int currentEmployeeIndex = -1;
         public int CurrentEmployeeIndex
         {
             get { return currentEmployeeIndex; }
@@ -379,7 +384,40 @@ namespace GraphiGenius.MVVM.ViewModel
 
         }
         #endregion
-            #region Generate
+        #region Generate
+        private string generateNameForm;
+        public string GenerateNameForm
+        {
+            get { return generateNameForm; }
+            set
+            {
+                generateNameForm = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(GenerateNameForm)));
+
+            }
+        }
+        private string generateMonthForm;
+        public string GenerateMonthForm
+        {
+            get { return generateMonthForm; }
+            set
+            {
+                generateMonthForm = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(GenerateMonthForm)));
+
+            }
+        }
+        private string generateYearForm;
+        public string GenerateYearForm
+        {
+            get { return generateYearForm; }
+            set
+            {
+                generateYearForm = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(GenerateYearForm)));
+
+            }
+        }
         private ICommand _generatesettings;
 
         public ICommand GenerateSettings
@@ -440,14 +478,234 @@ namespace GraphiGenius.MVVM.ViewModel
                 _graphiName = value;
             }
         }
-        private async Task generate()
+
+        public string GenerateScheduleTable(List<Shift> shifts)
         {
+            StringBuilder tableBuilder = new StringBuilder();
+
+           
+            tableBuilder.AppendLine("<table>");
+            tableBuilder.AppendLine("<tr>");
+            tableBuilder.AppendLine("<th>Employee</th>");
+            tableBuilder.AppendLine("<th>Department</th>");
+            tableBuilder.AppendLine("<th>Shift Index</th>");
+            tableBuilder.AppendLine("<th>Day in Month</th>");
+            tableBuilder.AppendLine("<th>Shift Length</th>");
+            tableBuilder.AppendLine("<th>Start Time</th>");
+            tableBuilder.AppendLine("<th>End Time</th>");
+            tableBuilder.AppendLine("<th>Shifts</th>");
+            tableBuilder.AppendLine("</tr>");
+
+            
+            foreach (Shift shift in shifts)
+            {
+                tableBuilder.AppendLine("<tr>");
+                tableBuilder.AppendLine($"<td>{shift.EmployeeName}</td>");
+                tableBuilder.AppendLine($"<td>{shift.DepartmentName}</td>");
+                tableBuilder.AppendLine($"<td>{shift.IndexOfShift}</td>");
+                tableBuilder.AppendLine($"<td>{shift.DayInMonth}</td>");
+                tableBuilder.AppendLine($"<td>{shift.ShiftLengthDay}</td>");
+                tableBuilder.AppendLine($"<td>{shift.StartHourDay}:{shift.StartMinuteDay}</td>");
+                tableBuilder.AppendLine($"<td>{shift.EndHourDay}:{shift.EndMinuteDay}</td>");
+                tableBuilder.AppendLine($"<td>{shift.ShiftsDay}</td>");
+                tableBuilder.AppendLine("</tr>");
+            }
+
+            // Zakończenie tabeli
+            tableBuilder.AppendLine("</table>");
+
+            return tableBuilder.ToString();
+        }
+
+        private async Task generate()
+
+        {
+            await _generateshift.generate_shift(GraphiName, MonthNumber);
+
+            ShiftDatabaseAccess shiftDatabaseAccess = new ShiftDatabaseAccess();
+            List<Shift> shifts = shiftDatabaseAccess.loadShifts();
+
+            string generatehtml = @"<!DOCTYPE html>
+                                <html lang=""pl"">
+                                <head>
+
+                                    <meta charset=""utf-8"">
+                                    <title>Pole Minowe</title>
+                                    <meta name=""keywords"" content=""javascript, jQuery, game, gwent, memory"">
+                                    <meta name=""author"" content=""BB"">
+                                    
+                                    <meta http-equiv=""X-Ua-Compatible"" content=""IE=edge,chrome=1"">
+
+
+                                    <link rel=""stylesheet"" href=""grafmain.css"">
+
+
+                                     <link href=""https://fonts.googleapis.com/css2?family=Rubik+Beastly&display=swap"" rel=""stylesheet""> 
+
+                                    
+                                    
+                                    <!--[if lt IE 9]>
+                                    <script src=""//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js""></script>
+                                    <![endif]-->
+
+
+
+
+                                    <style>
+
+                                    body {
+                                        margin: 0;
+                                        background-color: #35363a;
+                                        color: #fafafa;
+                                        font-family: ""Lobster"", sans-serif;
+                                        font-size: 18px;
+                                        text-align: center;
+                                    }
+
+                                    #board {
+                                        background-color: #787a80;
+                                        justify-content: center;
+                                        margin: auto;
+                                        height: 540px;
+                                        width: 1200px;
+                                    }
+
+                                    #monthname {
+                                        width: 100px;
+                                    }
+
+                                    a:link {
+                                        color: #fafafa;
+                                        text-decoration: none;
+                                    }
+
+                                    a:visited {
+                                        color: #fafafa;
+                                    }
+
+                                    a:active {
+                                        color: #fafafa;
+                                    }
+
+                                    a:hover {
+                                        color: #e9b64a;
+                                    }
+
+                                    h1 {
+                                        font-size: 64px;
+                                        font-weight: 200;
+                                        text-align: center;
+                                        letter-spacing: 5px;
+                                        margin-top: 20px;
+                                        margin-bottom: 0px;
+                                        color: #902936;
+                                    }
+
+                                    .blad {
+                                        background-color: rgb(92, 50, 170);
+                                        margin: 0px;
+                                        width: 30px;
+                                        height: 40px;
+                                        cursor: cell;
+                                        border-bottom: 1px solid #dadada;
+                                    }
+
+                                    .blad2 {
+                                        background-color: rgb(255, 168, 55);
+                                        margin: 0px;
+                                        width: 30px;
+                                        height: 40px;
+                                        cursor: cell;
+                                        border-bottom: 1px solid #dadada;
+                                    }
+
+                                    .days {
+                                        border: 1px solid #e9b64a;
+                                        margin: 0px;
+                                        width: 30px;
+                                        height: 40px;
+                                    }
+
+                                    .weekendchanges {
+                                        border: 1px solid #e9b64a;
+                                        margin: 0px;
+                                        width: 30px;
+                                        height: 40px;
+                                        background-color: rgb(197, 195, 70);
+                                    }
+
+                                    .urlop {
+                                        background-color: plum;
+                                    }
+
+                                    .changes {
+                                        margin: 0px;
+                                        width: 30px;
+                                        height: 40px;
+                                    }
+
+                                    table, th, td {
+                                        border-collapse: collapse;
+                                    }
+
+                                    .dniowka, .nocka, .changes, .urlop, .check, .weekendchanges {
+                                        border: 1px solid #dadada;
+                                        cursor: pointer;
+                                        color: black;
+                                        font-weight: 400;
+                                    }
+
+                                    .check {
+                                        background-color: rgb(170, 22, 22);
+                                        margin: 0px;
+                                        width: 30px;
+                                        height: 40px;
+                                        cursor: cell;
+                                    }
+
+                                    .cor {
+                                        background-color: rgb(24, 201, 92);
+                                        margin: 0px;
+                                        width: 30px;
+                                        height: 40px;
+                                        cursor: cell;
+                                    }
+
+                                    .box {
+                                        cursor: pointer;
+                                        border: 1px solid #dadada;
+                                        border-collapse: collapse;
+                                    }
+                                    </style>
+
+                                </head>
+
+                                <body>
+
+                                    <header>
+                                    
+                                        <h1>Grafik pracy</h1>
+                                    
+                                    
+                                    </header>
+                                    
+                                    <main>
+                                        
+                                        <div id=""board"">
+                                            " + GenerateScheduleTable(shifts) + @"
+                                        </div>
+                                        
+                                    </main>
+                                    
+
+
+                                </body>
+
+                                </html>";
+
             WebBrowserWindow webBrowserWindow = new();
             webBrowserWindow.Show();
-            webBrowserWindow.webBrowser1.NavigateToString("<html><head></head><body>First row<br>Second row</body></html>");
-            await _generateshift.generate_shift(GraphiName, MonthNumber);
-            
-            
+            webBrowserWindow.webBrowser1.NavigateToString(generatehtml);
         }
 
         #endregion

@@ -92,12 +92,15 @@ namespace GraphiGenius.MVVM.Model
             department.Id = departmentId;
             department.Name = Convert.ToString(dt.Rows[0]["Name"]);
             dt = dbConnect($"select Shifts, ShiftLength, StartHour, StartMinute, EndHour, EndMinute from Day where DepartmentId={departmentId} ORDER by DayOfWeek;");
+            if (dt.Rows.Count != 0)
+            {
             ObservableCollection<int> _shifts = new ObservableCollection<int>();
             ObservableCollection<int> _shiftLenghts = new ObservableCollection<int>();
             ObservableCollection<int> _startHours = new ObservableCollection<int>();
             ObservableCollection<int> _startMinutes = new ObservableCollection<int>();
             ObservableCollection<int> _endHours = new ObservableCollection<int>();
             ObservableCollection<int> _endMinutes = new ObservableCollection<int>();
+
             for (int i = 0; i < 7; i++)
             {
                 _shifts.Add(Convert.ToInt32(dt.Rows[i]["Shifts"]));
@@ -113,6 +116,7 @@ namespace GraphiGenius.MVVM.Model
             department.StartMinutes= _startMinutes;
             department.EndHours= _endHours;
             department.EndMinutes= _endMinutes;
+            }
             return department;
         }
         public void deleteDepartment(int departmentId)
