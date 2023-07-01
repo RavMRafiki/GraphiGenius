@@ -51,7 +51,7 @@ namespace GraphiGenius.MVVM.ViewModel
                 Departments.Add(_departmentsDatabaseAccess.departmentName(departmentsIds[i]));
             }
         }
-        private int[] employeesIds;
+        private int[] employeesIds = new int[0];
         private void _reloadEmployees()
         {
             Employees.Clear();
