@@ -30,6 +30,7 @@ namespace GraphiGenius.MVVM.ViewModel
         private Model.Employee _employeeForm = new();
         private Model.Department _departmentForm = new();
         private Model.DayDatabaseAccess _daydatabaseaccess = new();
+        private Model.GenerateShift _generateshift = new();
         public MainViewModel()
         {
             _reloadDepartments();
@@ -421,52 +422,30 @@ namespace GraphiGenius.MVVM.ViewModel
         {
             EditSettings = true;
         }
+        private int _monthNumber;
+        public int MonthNumber
+        {
+            get => _monthNumber;
+            set
+            {
+                _monthNumber = Convert.ToInt32(value);
+            }
+        }
+        private string _graphiName;
+        public string GraphiName
+        {
+            get => _graphiName;
+            set
+            {
+                _graphiName = value;
+            }
+        }
         private async Task generate()
         {
             WebBrowserWindow webBrowserWindow = new();
             webBrowserWindow.Show();
             webBrowserWindow.webBrowser1.NavigateToString("<html><head></head><body>First row<br>Second row</body></html>");
-            List<List<int>> ints = _departmentsDatabaseAccess.DepartmentInfo();
-            for(int i=0; i<ints.Count; i++)
-            {
-                var emp_temp = _employeeDatabaseAccess.loadEmployees(ints[i][3]);
-                ScheduleRequest requestData = new ScheduleRequest
-                {
-                    employees = new List<int>(emp_temp),
-                    shifts_per_day = ints[i][0],
-                    days_per_week = ints[i][1],
-                    shift_length = ints[i][2],
-                    emp_per_shift = _daydatabaseaccess.employeers_per_shift(ints[i][3], ints[i][2])
-                };
-                Graphi grafik = new Graphi
-                {
-                    Name = "grafik2",
-                    Month = 6,
-                    Year = 2023
-                };
-                _shiftDatabaseAccess.addGraphi(grafik);
-                var scheduleArray = await SendToApi.send_to_api(requestData);
-                for (int x = 0; x < scheduleArray.work_schedule.Count; x++)
-                {
-                    for (int y = 0; y < scheduleArray.work_schedule[x].Count; y++)
-                    {
-                        for (int z = 0; z < scheduleArray.work_schedule[x][y].Count; z++)
-                        {
-                            Shift shift = new Shift
-                            {
-                                EmployeeId = scheduleArray.work_schedule[x][y][z],
-                                DayId = x,
-                                IndexOfShift = y,
-                                DayInMonth = x + (7- ints[i][1])*(x/7),
-                                GraphId = _shiftDatabaseAccess.loadGraphi(grafik.Name).Id
-                            };
-                            _shiftDatabaseAccess.addShift(shift);
-                        }
-                    }
-                }
-               
-
-            }
+            await _generateshift.generate_shift(GraphiName, MonthNumber);
             
             
         }

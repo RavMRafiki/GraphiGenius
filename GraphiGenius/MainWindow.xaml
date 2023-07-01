@@ -293,9 +293,9 @@
                     </TextBlock>
 
                     <Label  Foreground="White">Graphic Name</Label>
-                    <TextBox></TextBox>
+                    <TextBox Text="{Binding GraphiName}"></TextBox>
                     <Label  Foreground="White">Month Number</Label>
-                    <TextBox PreviewTextInput="PreviewNumericInputMonths"></TextBox>
+                    <TextBox Text="{Binding MonthNumber}" PreviewTextInput="PreviewNumericInputMonths"></TextBox>
 
                     <Button Command="{Binding Generate}" Style="{StaticResource ButtonStyle}">Generate</Button>
                     <StackPanel.Style>

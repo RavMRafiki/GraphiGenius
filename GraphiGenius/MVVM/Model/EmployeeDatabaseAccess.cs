@@ -25,6 +25,18 @@ namespace GraphiGenius.MVVM.Model
             int[] ints = _employees.ToArray();
             return ints;
         }
+        public List<int> loadEmployeesWorkingHours(List<int> employees)
+        {
+            List<int> workinghours = new List<int>();
+            DataTable dt = new DataTable();
+            
+            foreach (int employee in employees)
+            {
+                dt = dbConnect($"select WorkingHours from Employee where Id={employee}");
+                workinghours.Add(Convert.ToInt32(dt.Rows[0]["WorkingHours"]));
+            }
+            return workinghours;
+        }
         public string employeeName(int id)
         {
             DataTable dt = new DataTable();
