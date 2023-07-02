@@ -16,6 +16,7 @@ using System.Net.Http;
 using System.Diagnostics;
 using System.Data;
 using System.Xml.Linq;
+using System.Windows.Media;
 
 
 namespace GraphiGenius.MVVM.ViewModel
@@ -483,36 +484,131 @@ namespace GraphiGenius.MVVM.ViewModel
         {
             StringBuilder tableBuilder = new StringBuilder();
 
-           
-            tableBuilder.AppendLine("<table>");
-            tableBuilder.AppendLine("<tr>");
-            tableBuilder.AppendLine("<th>Employee</th>");
-            tableBuilder.AppendLine("<th>Department</th>");
-            tableBuilder.AppendLine("<th>Shift Index</th>");
-            tableBuilder.AppendLine("<th>Day in Month</th>");
-            tableBuilder.AppendLine("<th>Shift Length</th>");
-            tableBuilder.AppendLine("<th>Start Time</th>");
-            tableBuilder.AppendLine("<th>End Time</th>");
-            tableBuilder.AppendLine("<th>Shifts</th>");
-            tableBuilder.AppendLine("</tr>");
+            Graphi graphi = _shiftDatabaseAccess.loadGraphi(shifts[0].gName); // Pobierz obiekt Graphi
 
-            
-            foreach (Shift shift in shifts)
+            int year = graphi.Year; // Pobierz rok z obiektu Graphi
+            int month = graphi.Month; // Pobierz miesiąc z obiektu Graphi
+
+            int days = DateTime.DaysInMonth(year, month);
+
+            var departments = shifts.Select(s => new { DepartmentName = s.DepartmentName, DepartmentId = s.DepartmentId })
+                                    .Distinct()
+                                    .ToList();
+
+            foreach (var department in departments)
             {
-                tableBuilder.AppendLine("<tr>");
-                tableBuilder.AppendLine($"<td>{shift.EmployeeName}</td>");
-                tableBuilder.AppendLine($"<td>{shift.DepartmentName}</td>");
-                tableBuilder.AppendLine($"<td>{shift.IndexOfShift}</td>");
-                tableBuilder.AppendLine($"<td>{shift.DayInMonth}</td>");
-                tableBuilder.AppendLine($"<td>{shift.ShiftLengthDay}</td>");
-                tableBuilder.AppendLine($"<td>{shift.StartHourDay}:{shift.StartMinuteDay}</td>");
-                tableBuilder.AppendLine($"<td>{shift.EndHourDay}:{shift.EndMinuteDay}</td>");
-                tableBuilder.AppendLine($"<td>{shift.ShiftsDay}</td>");
+                // Pobierz listę pracowników dla danego departamentu
+                int[] employeeIds = _employeeDatabaseAccess.loadEmployees(department.DepartmentId);
+
+                // Pobierz maksymalny dzień w miesiącu dla danego departamentu
+                int maxDayInMonth = shifts.Where(s => s.DepartmentId == department.DepartmentId)
+                                          .Max(s => s.DayInMonth);
+
+                // Generowanie tabeli dla departamentu
+                tableBuilder.AppendLine("<h1>" + department.DepartmentName + "</h1>");
+                tableBuilder.AppendLine("<table class='schedule-table'>");
+                tableBuilder.AppendLine("<tr><th colspan='2'></th>");
+
+                // Dodaj nazwy dni tygodnia
+                string[] dayNames = { "ND", "Pon", "Wt", "Śr", "Czw", "Pt", "So" };
+                for (int j = 0; j < maxDayInMonth; j++)
+                {
+                    DateTime date = new DateTime(year, month, j + 1);
+                    string dayName = dayNames[(int)date.DayOfWeek];
+                    tableBuilder.AppendLine("<th>" + dayName + "</th>");
+                }
+
                 tableBuilder.AppendLine("</tr>");
+
+                tableBuilder.AppendLine("<tr><th colspan='2'></th>");
+
+                for (int i = 0; i < maxDayInMonth; i++)
+                {
+                    tableBuilder.AppendLine("<td id='day" + i + "' class='days' colspan='1'>" + (i + 1) + "</td>");
+                }
+
+                tableBuilder.AppendLine("</tr>");
+
+                // Wypełnij tabelę danymi pracowników i ich zmian
+                for (int i = 0; i < employeeIds.Length; i++)
+                {
+                    tableBuilder.AppendLine("<tr> <th class='days' colspan='2'>" + _employeeDatabaseAccess.employeeName(employeeIds[i]) + "</th>");
+
+                    int totalHours = 0; // Suma godzin dla danego pracownika
+
+                    for (int j = 0; j < maxDayInMonth; j++)
+                    {
+                        bool check = false;
+                        foreach (var shift in shifts)
+                        {
+                            if (shift.DayInMonth == j + 1 && shift.EmployeeId == employeeIds[i] && shift.gName == shifts[0].gName)
+                            {
+                                int shiftNumber = shift.IndexOfShift + 1;
+                                tableBuilder.AppendLine("<td id='prac" + i + "dzien" + j + "' class='changes'>" + shiftNumber + "</td>");
+                                check = true;
+                            }
+                        }
+
+                        if (check == false)
+                        {
+                            tableBuilder.AppendLine("<td id='prac" + i + "dzien" + j + "' class='changes'></td>");
+                        }
+
+                        if (j == maxDayInMonth - 1)
+                        {
+                            // Oblicz sumę godzin
+                            int shiftHoursSum = shifts.Where(s => s.DayInMonth <= maxDayInMonth &&
+                                                                  s.EmployeeId == employeeIds[i] &&
+                                                                  s.gName == shifts[0].gName)
+                                                      .Sum(s => (s.EndHourDay - s.StartHourDay) * 60 + (s.EndMinuteDay - s.StartMinuteDay));
+                            totalHours += shiftHoursSum;
+
+                            tableBuilder.AppendLine("<td id='prach" + i + "' class='changes'>" + totalHours + "</td>");
+                        }
+                    }
+
+                    tableBuilder.AppendLine("</tr>");
+                
+
             }
 
-            // Zakończenie tabeli
-            tableBuilder.AppendLine("</table>");
+            tableBuilder.AppendLine("</tr></table>");
+
+                tableBuilder.AppendLine("<h2 class='table-header'>" + department.DepartmentName + " - Godziny zmian:</h2>");
+                tableBuilder.AppendLine("<table class='schedule-table'>");
+
+                // Nagłówki dla dni tygodnia
+                tableBuilder.AppendLine("<tr>");
+                tableBuilder.AppendLine("<th></th>");
+                for (int j = 0; j < 7; j++)
+                {
+                    tableBuilder.AppendLine("<th class='day-header'>" + dayNames[j] + "</th>");
+                }
+                tableBuilder.AppendLine("</tr>");
+
+                // Wypełnij tabelę zakresami godzinowymi zmian
+                for (int shiftIndex = 0; shiftIndex < 3; shiftIndex++)
+                {
+                    tableBuilder.AppendLine("<tr>");
+                    tableBuilder.AppendLine("<th class='shift-header'>Zmiana " + (shiftIndex + 1) + "</th>");
+
+                    for (int dayIndex = 0; dayIndex < 7; dayIndex++)
+                    {
+                        Shift shift = shifts.FirstOrDefault(s => s.DepartmentId == department.DepartmentId &&
+                                                                  s.DayInMonth == dayIndex + 1 &&
+                                                                  s.IndexOfShift == shiftIndex);
+
+                        string shiftHours = shift != null ? shift.StartHourDay.ToString("00") + ":" + shift.StartMinuteDay.ToString("00") + " - " +
+                                                           shift.EndHourDay.ToString("00") + ":" + shift.EndMinuteDay.ToString("00") : "";
+
+                        tableBuilder.AppendLine("<td class='shift-hours'>" + shiftHours + "</td>");
+                    }
+
+                    tableBuilder.AppendLine("</tr>");
+                }
+
+                tableBuilder.AppendLine("</table>");
+            }
 
             return tableBuilder.ToString();
         }
@@ -520,7 +616,7 @@ namespace GraphiGenius.MVVM.ViewModel
         private async Task generate()
 
         {
-            await _generateshift.generate_shift(GraphiName, MonthNumber);
+            //await _generateshift.generate_shift(GraphiName, MonthNumber);
 
             ShiftDatabaseAccess shiftDatabaseAccess = new ShiftDatabaseAccess();
             List<Shift> shifts = shiftDatabaseAccess.loadShifts();
@@ -555,7 +651,7 @@ namespace GraphiGenius.MVVM.ViewModel
 
                                     body {
                                         margin: 0;
-                                        background-color: #35363a;
+                                        background-color: #272537;
                                         color: #fafafa;
                                         font-family: ""Lobster"", sans-serif;
                                         font-size: 18px;
@@ -563,13 +659,93 @@ namespace GraphiGenius.MVVM.ViewModel
                                     }
 
                                     #board {
-                                        background-color: #787a80;
+                                        background-color: #3c3b52;
                                         justify-content: center;
                                         margin: auto;
-                                        height: 540px;
-                                        width: 1200px;
+                                        height: auto;
+                                        width: auto;
                                     }
+ .table-header {
+        font-size: 18px;
+        font-weight: bold;
+        margin-top: 20px;
+    }
 
+    .schedule-table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .day-header {
+        font-weight: bold;
+        text-align: center;
+        padding: 8px;
+    }
+
+    .shift-header {
+        font-weight: bold;
+        padding: 8px;
+    }
+
+    .shift-hours {
+        text-align: center;
+        padding: 8px;
+    }
+/* Główna tabela harmonogramu */
+.schedule-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.schedule-table th,
+.schedule-table td {
+  padding: 10px;
+  text-align: center;
+  border: 1px solid #ccc;
+}
+
+.schedule-table th {
+  background-color: #272537;
+}
+
+.schedule-table .day-header {
+  font-weight: bold;
+}
+
+.schedule-table .shift-header {
+  font-weight: bold;
+  background-color: #272537;
+}
+
+.schedule-table .shift-hours {
+  font-weight: normal;
+}
+
+/* Tabela z grafikiem */
+.schedule-table-graph {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.schedule-table-graph th,
+.schedule-table-graph td {
+  padding: 5px;
+  text-align: center;
+  border: 1px solid #ccc;
+}
+
+.schedule-table-graph th {
+  background-color: #272537;
+}
+
+.schedule-table-graph .days {
+  font-weight: bold;
+}
+
+.schedule-table-graph .changes {
+  font-weight: normal;
+}
                                     #monthname {
                                         width: 100px;
                                     }
@@ -598,7 +774,7 @@ namespace GraphiGenius.MVVM.ViewModel
                                         letter-spacing: 5px;
                                         margin-top: 20px;
                                         margin-bottom: 0px;
-                                        color: #902936;
+                                        color: #c4c2d1;
                                     }
 
                                     .blad {
@@ -651,7 +827,7 @@ namespace GraphiGenius.MVVM.ViewModel
                                     .dniowka, .nocka, .changes, .urlop, .check, .weekendchanges {
                                         border: 1px solid #dadada;
                                         cursor: pointer;
-                                        color: black;
+                                        color: #fafafa;
                                         font-weight: 400;
                                     }
 

@@ -35,6 +35,7 @@ namespace GraphiGenius.MVVM.Model
         public int EndHourDay { get; set; }
         public int EndMinuteDay { get; set; }
         public int ShiftsDay { get; set; }
+        public string gName { get; set; }
 
         //Only for adding to DB
         public int GraphId { get; set; }

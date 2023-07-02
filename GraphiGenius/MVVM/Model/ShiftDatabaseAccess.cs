@@ -32,13 +32,14 @@ namespace GraphiGenius.MVVM.Model
                 $" d.EndMinute," +
                 $" d.Shifts," +
                 $" dep.Id," +
-                $" dep.Name" +
+                $" dep.Name," +
+                $" g.gName" +
                 $" FROM  Shifts s " +
                 $"INNER JOIN Employee e ON s.EmployeeId = e.Id " +
                 $"INNER JOIN Department dep ON e.DepartmentId = dep.Id " +
                 $"INNER JOIN Day d ON s.DayId = d.Id " +
                 $"INNER JOIN Graphi g ON s.GraphiId = g.Id " +
-                $"WHERE g.Name like \"{graphiName}\";");
+                $"WHERE g.gName like '{graphiName}';");
                 for (int i = 0; i < dt.Rows.Count; i++)
                 {
                     Shift shift = new();
@@ -55,6 +56,7 @@ namespace GraphiGenius.MVVM.Model
                     shift.EndHourDay = Convert.ToInt32(dt.Rows[i]["EndHour"]);
                     shift.EndMinuteDay = Convert.ToInt32(dt.Rows[i]["EndMinute"]);
                     shift.ShiftsDay = Convert.ToInt32(dt.Rows[i]["Shifts"]);
+                    shift.gName = Convert.ToString(dt.Rows[i]["gName"]);
                     result.Add(shift);
                 }
 
@@ -76,9 +78,9 @@ namespace GraphiGenius.MVVM.Model
         {
             Graphi graphi = new();
             DataTable dt = new DataTable();
-            dt = dbConnect($"SELECT Id, Name, Month, Year FROM Graphi WHERE Name=\"{name}\";");
+            dt = dbConnect($"SELECT Id, gName, Month, Year FROM Graphi WHERE gName='{name}';");
             graphi.Id = Convert.ToInt32(dt.Rows[0]["Id"]);
-            graphi.Name = Convert.ToString(dt.Rows[0]["Name"]);
+            graphi.Name = Convert.ToString(dt.Rows[0]["gName"]);
             graphi.Month = Convert.ToInt32(dt.Rows[0]["Month"]);
             graphi.Year = Convert.ToInt32(dt.Rows[0]["Year"]);
             return graphi;
