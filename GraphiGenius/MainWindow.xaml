@@ -177,7 +177,7 @@
                             <RowDefinition/>
                         </Grid.RowDefinitions>
                         <Label Grid.Row="0" Grid.Column="0">Day</Label>
-                        <Label Grid.Row="1" Grid.Column="0">Shifts</Label>
+                        <Label Grid.Row="1" Grid.Column="0">Employees</Label>
                         <Label Grid.Row="2" Grid.Column="0">Sh. Length</Label>
                         <Label Grid.Row="3" Grid.Column="0">Start Time</Label>
                         <Label Grid.Row="4" Grid.Column="0">End Time</Label>

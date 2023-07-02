@@ -9,7 +9,7 @@ namespace GraphiGenius.MVVM.Model
 {
     class DayDatabaseAccess : DatabaseAccess
     {
-        public int employeers_per_shift(int id, int length)
+        public int shifts_per_day(int id, int length)
         {
             DataTable dt = new DataTable();
             dt = dbConnect($"select StartHour, EndHour from Day where DepartmentId={id};");

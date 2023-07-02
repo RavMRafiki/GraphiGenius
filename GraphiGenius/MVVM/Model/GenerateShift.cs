@@ -12,28 +12,32 @@ namespace GraphiGenius.MVVM.Model
         private Model.EmployeeDatabaseAccess _employeeDatabaseAccess = new();
         private Model.ShiftDatabaseAccess _shiftDatabaseAccess = new();
         private Model.DayDatabaseAccess _daydatabaseaccess = new();
-        public async Task generate_shift(string graphiName, int monthNumber)
+        public async Task generate_shift(string graphiName, int monthNumber, int year)
         {
             List<List<int>> ints = _departmentsDatabaseAccess.DepartmentInfo();
+            Graphi grafik = new Graphi
+            {
+                Name = graphiName,
+                Month = monthNumber,
+                Year = year,
+            };
+            _shiftDatabaseAccess.addGraphi(grafik);
+
+            DateTime firstDayOfMonth = new DateTime(year, monthNumber, 1);
+            int dayOfWeekNumber = (int)firstDayOfMonth.DayOfWeek;
+            if(dayOfWeekNumber == 0) dayOfWeekNumber = 7;
             for (int i = 0; i < ints.Count; i++)
             {
-                
-                Graphi grafik = new Graphi
-                {
-                    Name = graphiName,
-                    Month = monthNumber,
-                    Year = 2023
-                };
-                _shiftDatabaseAccess.addGraphi(grafik);
+
                 var emp_temp = _employeeDatabaseAccess.loadEmployees(ints[i][3]);
                 ScheduleRequest requestData = new ScheduleRequest
                 {
                     employees = new List<int>(emp_temp),
                     emp_workinghours = _employeeDatabaseAccess.loadEmployeesWorkingHours(new List<int>(emp_temp)),
-                    shifts_per_day = ints[i][0],
+                    shifts_per_day = _daydatabaseaccess.shifts_per_day(ints[i][3], ints[i][2]),
                     days_per_week = ints[i][1],
                     shift_length = ints[i][2],
-                    emp_per_shift = _daydatabaseaccess.employeers_per_shift(ints[i][3], ints[i][2]),
+                    emp_per_shift = ints[i][0],
                     monthId = grafik.Month,
                     year = grafik.Year,
                 };
@@ -49,9 +53,9 @@ namespace GraphiGenius.MVVM.Model
                             Shift shift = new Shift
                             {
                                 EmployeeId = scheduleArray.work_schedule[x][y][z],
-                                DayId = x,
+                                DayId = (x+dayOfWeekNumber-1) % ints[i][1] + 1,
                                 IndexOfShift = y,
-                                DayInMonth = x + (7 - ints[i][1]) * (x / 7),
+                                DayInMonth = x + 1 + (7- ints[i][1]) * (int)((x+dayOfWeekNumber-1) / ints[i][1]),
                                 GraphId = _shiftDatabaseAccess.loadGraphi(grafik.Name).Id
                             };
                             _shiftDatabaseAccess.addShift(shift);
