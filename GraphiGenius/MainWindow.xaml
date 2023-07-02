@@ -184,7 +184,7 @@
 
                         <Label Grid.Row="0" Grid.Column="1">Monday</Label>
                         <TextBox Grid.Row="1" Grid.Column="1" PreviewTextInput="PreviewNumericInput" Text="{Binding ShiftsForm[0]}"></TextBox>
-                        <TextBox Grid.Row="2" Grid.Column="1" PreviewTextInput="PreviewNumericInput" Text="{Binding ShiftLenghtsForm[0]}"></TextBox>
+                        <TextBox Grid.Row="2" Grid.Column="1" PreviewTextInput="PreviewNumericInputMonths" Text="{Binding ShiftLenghtsForm[0]}"></TextBox>
                         <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
                             <TextBox MinWidth="40" TextAlignment="Right" PreviewTextInput="PreviewNumericInputHours" Text="{Binding StartHoursForm[0]}"></TextBox>
                             <Label>:</Label>
@@ -198,7 +198,7 @@
 
                         <Label Grid.Row="0" Grid.Column="2">Tuesday</Label>
                         <TextBox Grid.Row="1" Grid.Column="2" PreviewTextInput="PreviewNumericInput" Text="{Binding ShiftsForm[1]}"></TextBox>
-                        <TextBox Grid.Row="2" Grid.Column="2" PreviewTextInput="PreviewNumericInput" Text="{Binding ShiftLenghtsForm[1]}"></TextBox>
+                        <TextBox Grid.Row="2" Grid.Column="2" PreviewTextInput="PreviewNumericInputMonths" Text="{Binding ShiftLenghtsForm[1]}"></TextBox>
                         <StackPanel Grid.Row="3" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Center">
                             <TextBox MinWidth="40" TextAlignment="Right" PreviewTextInput="PreviewNumericInputHours" Text="{Binding StartHoursForm[1]}"></TextBox>
                             <Label>:</Label>
@@ -212,7 +212,7 @@
 
                         <Label Grid.Row="0" Grid.Column="3">Wednesday</Label>
                         <TextBox Grid.Row="1" Grid.Column="3" PreviewTextInput="PreviewNumericInput" Text="{Binding ShiftsForm[2]}"></TextBox>
-                        <TextBox Grid.Row="2" Grid.Column="3" PreviewTextInput="PreviewNumericInput" Text="{Binding ShiftLenghtsForm[2]}"></TextBox>
+                        <TextBox Grid.Row="2" Grid.Column="3" PreviewTextInput="PreviewNumericInputMonths" Text="{Binding ShiftLenghtsForm[2]}"></TextBox>
                         <StackPanel Grid.Row="3" Grid.Column="3" Orientation="Horizontal" HorizontalAlignment="Center">
                             <TextBox MinWidth="40" TextAlignment="Right" PreviewTextInput="PreviewNumericInputHours" Text="{Binding StartHoursForm[2]}"></TextBox>
                             <Label>:</Label>
@@ -226,7 +226,7 @@
 
                         <Label Grid.Row="0" Grid.Column="4">Thursday</Label>
                         <TextBox Grid.Row="1" Grid.Column="4" PreviewTextInput="PreviewNumericInput" Text="{Binding ShiftsForm[3]}"></TextBox>
-                        <TextBox Grid.Row="2" Grid.Column="4" PreviewTextInput="PreviewNumericInput" Text="{Binding ShiftLenghtsForm[3]}"></TextBox>
+                        <TextBox Grid.Row="2" Grid.Column="4" PreviewTextInput="PreviewNumericInputMonths" Text="{Binding ShiftLenghtsForm[3]}"></TextBox>
                         <StackPanel Grid.Row="3" Grid.Column="4" Orientation="Horizontal" HorizontalAlignment="Center">
                             <TextBox MinWidth="40" TextAlignment="Right" PreviewTextInput="PreviewNumericInputHours" Text="{Binding StartHoursForm[3]}"></TextBox>
                             <Label>:</Label>
@@ -240,7 +240,7 @@
 
                         <Label Grid.Row="0" Grid.Column="5">Friday</Label>
                         <TextBox Grid.Row="1" Grid.Column="5" PreviewTextInput="PreviewNumericInput" Text="{Binding ShiftsForm[4]}"></TextBox>
-                        <TextBox Grid.Row="2" Grid.Column="5" PreviewTextInput="PreviewNumericInput" Text="{Binding ShiftLenghtsForm[4]}"></TextBox>
+                        <TextBox Grid.Row="2" Grid.Column="5" PreviewTextInput="PreviewNumericInputMonths" Text="{Binding ShiftLenghtsForm[4]}"></TextBox>
                         <StackPanel Grid.Row="3" Grid.Column="5" Orientation="Horizontal" HorizontalAlignment="Center">
                             <TextBox MinWidth="40" TextAlignment="Right" PreviewTextInput="PreviewNumericInputHours" Text="{Binding StartHoursForm[4]}"></TextBox>
                             <Label>:</Label>
@@ -254,7 +254,7 @@
 
                         <Label Grid.Row="0" Grid.Column="6">Saturday</Label>
                         <TextBox Grid.Row="1" Grid.Column="6" PreviewTextInput="PreviewNumericInput" Text="{Binding ShiftsForm[5]}"></TextBox>
-                        <TextBox Grid.Row="2" Grid.Column="6" PreviewTextInput="PreviewNumericInput" Text="{Binding ShiftLenghtsForm[5]}"></TextBox>
+                        <TextBox Grid.Row="2" Grid.Column="6" PreviewTextInput="PreviewNumericInputMonths" Text="{Binding ShiftLenghtsForm[5]}"></TextBox>
                         <StackPanel Grid.Row="3" Grid.Column="6" Orientation="Horizontal" HorizontalAlignment="Center">
                             <TextBox MinWidth="40" TextAlignment="Right" PreviewTextInput="PreviewNumericInputHours" Text="{Binding StartHoursForm[5]}"></TextBox>
                             <Label>:</Label>
@@ -268,7 +268,7 @@
 
                         <Label Grid.Row="0" Grid.Column="7">Sunday</Label>
                         <TextBox Grid.Row="1" Grid.Column="7" PreviewTextInput="PreviewNumericInput" Text="{Binding ShiftsForm[6]}"></TextBox>
-                        <TextBox Grid.Row="2" Grid.Column="7" PreviewTextInput="PreviewNumericInput" Text="{Binding ShiftLenghtsForm[6]}"></TextBox>
+                        <TextBox Grid.Row="2" Grid.Column="7" PreviewTextInput="PreviewNumericInputMonths" Text="{Binding ShiftLenghtsForm[6]}"></TextBox>
                         <StackPanel Grid.Row="3" Grid.Column="7" Orientation="Horizontal" HorizontalAlignment="Center">
                             <TextBox MinWidth="40" TextAlignment="Right" PreviewTextInput="PreviewNumericInputHours" Text="{Binding StartHoursForm[6]}"></TextBox>
                             <Label>:</Label>

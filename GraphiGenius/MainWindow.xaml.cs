@@ -38,7 +38,7 @@ namespace GraphiGenius
             {
                 e.Handled = true;
             }
-            else if (newValue < 1 || newValue > 12)
+            else if (newValue < 0 || newValue > 12)
             {
                 e.Handled = true;
             }
