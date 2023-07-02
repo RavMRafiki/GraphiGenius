@@ -483,9 +483,118 @@ namespace GraphiGenius.MVVM.ViewModel
         {
             StringBuilder tableBuilder = new StringBuilder();
 
-           
-            tableBuilder.AppendLine("<table>");
-            tableBuilder.AppendLine("<tr>");
+            // var departments = shifts.Select(s => s.DepartmentName).Distinct().ToList();
+            var departments = shifts
+     .Select(s => new { DepartmentName = s.DepartmentName, DepartmentId = s.DepartmentId })
+     .Distinct()
+     .ToList();
+
+
+            foreach (var department in departments)
+            {
+                tableBuilder.AppendLine("<h2>" + department + "</h2>");
+
+                var departmentShifts = shifts.Where(s => s.DepartmentName == department.DepartmentName).ToList();
+                var maxDayInMonth = departmentShifts.Max(s => s.DayInMonth);
+
+
+                // List<int> workers = new List<int>();
+                // List<Employee> employees = _employeeDatabaseAccess.loadEmployees(department.Select);
+
+                // int employeeCount = departmentShifts.Count;
+                // Pobierz pracowników dla danego departamentu (workers = _employeeDatabaseAccess.loadEmployees(departmentId))
+                // Możesz użyć wcześniej zdefiniowanej metody loadDepartments() z klasy DepartmentsDatabaseAccess, aby pobrać identyfikatory departamentów i przekazać go jako parametr do metody loadEmployees().
+                Dictionary<int, string> workers = new Dictionary<int, string>();
+                int[] employeeIds = _employeeDatabaseAccess.loadEmployees(department.DepartmentId);
+
+                foreach (int employeeId in employeeIds)
+                {
+                    string employeeName = _employeeDatabaseAccess.employeeName(employeeId);
+                    workers.Add(employeeId, employeeName);
+                }
+
+                int days = maxDayInMonth;
+
+                // Generowanie tabeli dla departamentu
+                tableBuilder.AppendLine("<table>");
+                tableBuilder.AppendLine("<tr><th colspan='2'></th>");
+
+                for (int j = 0; j < days; j++)
+                {
+                    tableBuilder.AppendLine("<td id='daytyg" + j + "'class='days' colspan='1'>0</td>");
+                }
+
+                tableBuilder.AppendLine("</tr>");
+
+                tableBuilder.AppendLine("<tr><th colspan='2'></th>");
+
+                for (int i = 0; i < days; i++)
+                {
+                    tableBuilder.AppendLine("<td id='day" + i + "'class='days' colspan='1'>" + (i + 1) + "</td>");
+                }
+
+                tableBuilder.AppendLine("</tr>");
+
+                foreach (var worker in workers)
+                {
+                    int employeeId = worker.Key;
+                    string employeeName = worker.Value;
+
+                    tableBuilder.AppendLine("<tr> <th class='days' colspan='2'>" + employeeName + "</th>");
+
+                    for (int j = 0; j < days; j++)
+                    {
+                        tableBuilder.AppendLine("<td id='prac" + employeeId + "dzien" + j + "'class='changes'></td>");
+
+                        if (j == days - 1)
+                        {
+                            tableBuilder.AppendLine("<td id='prach" + employeeId + "'class='changes'>0</td>");
+                        }
+                    }
+
+                    tableBuilder.AppendLine("</tr>");
+                }
+
+
+
+
+
+
+
+
+
+
+
+                /*
+                for (int i = 0; i < workers.Count(); i++)
+                {
+                    tableBuilder.AppendLine("<tr> <th class='days' colspan='2'>" + workers[i].employeeName + "</th>");
+
+                    for (int j = 0; j < days; j++)
+                    {
+                        tableBuilder.AppendLine("<td id='prac" + i + "dzien" + j + "'class='changes'></td>");
+
+                        if (j == days - 1)
+                        {
+                            tableBuilder.AppendLine("<td id='prach" + i + "'class='changes'>0</td>");
+                        }
+                    }
+
+                    tableBuilder.AppendLine("</tr>");
+                }
+                */
+                tableBuilder.AppendLine("<tr> <th colspan='2'></th>");
+
+                for (int j = 0; j < days; j++)
+                {
+                    tableBuilder.AppendLine("<td id='dzien" + j + "'class='check'></td>");
+                }
+
+                tableBuilder.AppendLine("</tr></table>");
+
+
+                /*
+                tableBuilder.AppendLine("<tr>");
             tableBuilder.AppendLine("<th>Employee</th>");
             tableBuilder.AppendLine("<th>Department</th>");
             tableBuilder.AppendLine("<th>Shift Index</th>");
@@ -513,14 +622,16 @@ namespace GraphiGenius.MVVM.ViewModel
 
             // Zakończenie tabeli
             tableBuilder.AppendLine("</table>");
-
+                */
+            }
             return tableBuilder.ToString();
         }
 
         private async Task generate()
 
         {
-            await _generateshift.generate_shift(GraphiName, MonthNumber);
+            int year = Convert.ToInt32(GenerateYearForm);
+            await _generateshift.generate_shift(GraphiName, MonthNumber, year);
 
             ShiftDatabaseAccess shiftDatabaseAccess = new ShiftDatabaseAccess();
             List<Shift> shifts = shiftDatabaseAccess.loadShifts();
