@@ -25,6 +25,7 @@ namespace GraphiGenius.MVVM.Model
                 $" e.Name AS EmployeeName," +
                 $" s.NumberOfShifts," +
                 $" s.DayInMonth," +
+                $" s.DayId," +
                 $" d.ShiftLength," +
                 $" d.StartHour," +
                 $" d.StartMinute," +
@@ -32,13 +33,14 @@ namespace GraphiGenius.MVVM.Model
                 $" d.EndMinute," +
                 $" d.Shifts," +
                 $" dep.Id," +
-                $" dep.Name" +
+                $" dep.Name," +
+                $" g.Name AS gName" +
                 $" FROM  Shifts s " +
                 $"INNER JOIN Employee e ON s.EmployeeId = e.Id " +
                 $"INNER JOIN Department dep ON e.DepartmentId = dep.Id " +
                 $"INNER JOIN Day d ON s.DayId = d.Id " +
                 $"INNER JOIN Graphi g ON s.GraphiId = g.Id " +
-                $"WHERE g.Name like \"{graphiName}\";");
+                $"WHERE g.Name like '{graphiName}';");
                 for (int i = 0; i < dt.Rows.Count; i++)
                 {
                     Shift shift = new();
@@ -49,19 +51,21 @@ namespace GraphiGenius.MVVM.Model
                     shift.DepartmentName = Convert.ToString(dt.Rows[i]["Name"]);
                     shift.IndexOfShift = Convert.ToInt32(dt.Rows[i]["NumberOfShifts"]);
                     shift.DayInMonth = Convert.ToInt32(dt.Rows[i]["DayInMonth"]);
-                    shift.ShiftLengthDay = Convert.ToInt32(dt.Rows[i]["ShiftLength"]);
+                    shift.DaysId = Convert.ToInt32(dt.Rows[i]["DayId"]);
+                    shift.ShiftLengthDay = Convert.ToDouble(dt.Rows[i]["ShiftLength"]);
                     shift.StartHourDay = Convert.ToInt32(dt.Rows[i]["StartHour"]);
                     shift.StartMinuteDay = Convert.ToInt32(dt.Rows[i]["StartMinute"]);
                     shift.EndHourDay = Convert.ToInt32(dt.Rows[i]["EndHour"]);
                     shift.EndMinuteDay = Convert.ToInt32(dt.Rows[i]["EndMinute"]);
                     shift.ShiftsDay = Convert.ToInt32(dt.Rows[i]["Shifts"]);
+                    shift.gName = Convert.ToString(dt.Rows[i]["gName"]);
                     result.Add(shift);
                 }
 
 
                 return result;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return null;
             }
@@ -76,7 +80,7 @@ namespace GraphiGenius.MVVM.Model
         {
             Graphi graphi = new();
             DataTable dt = new DataTable();
-            dt = dbConnect($"SELECT Id, Name, Month, Year FROM Graphi WHERE Name=\"{name}\";");
+            dt = dbConnect($"SELECT Id, Name, Month, Year FROM Graphi WHERE Name='{name}';");
             graphi.Id = Convert.ToInt32(dt.Rows[0]["Id"]);
             graphi.Name = Convert.ToString(dt.Rows[0]["Name"]);
             graphi.Month = Convert.ToInt32(dt.Rows[0]["Month"]);
@@ -91,3 +95,4 @@ namespace GraphiGenius.MVVM.Model
         }
     }
 }
+
