@@ -479,18 +479,18 @@ namespace GraphiGenius.MVVM.ViewModel
             }
         }
 
-        public string GenerateScheduleTable(List<Shift> shifts)
+        public string GenerateScheduleTable(List<Shift> shifts, string GraphiName)
         {
             StringBuilder tableBuilder = new StringBuilder();
 
-            Graphi graphi = _shiftDatabaseAccess.loadGraphi(shifts[0].gName); // Pobierz obiekt Graphi
+            Graphi graphi = _shiftDatabaseAccess.loadGraphi(GraphiName); // Pobierz obiekt Graphi
 
             int year = graphi.Year; // Pobierz rok z obiektu Graphi
             int month = graphi.Month; // Pobierz miesiąc z obiektu Graphi
 
             int days = DateTime.DaysInMonth(year, month);
 
-            var departments = shifts.Select(s => new { DepartmentName = s.DepartmentName, DepartmentId = s.DepartmentId, DepartmentShifts  = s.ShiftsDay, DepartmentSh = s.StartHourDay, DepartmentSm = s.StartMinuteDay, DepartmentWt = s.ShiftLengthDay})
+            var departments = shifts.Select(s => new { DepartmentName = s.DepartmentName, DepartmentId = s.DepartmentId})
                                     .Distinct()
                                     .ToList();
 
@@ -572,7 +572,7 @@ namespace GraphiGenius.MVVM.ViewModel
                             // Oblicz sumę godzin
                             double shiftHoursSum = shifts.Where(s => s.DayInMonth <= maxDayInMonth &&
                                                                   s.EmployeeId == employeeIds[i] &&
-                                                                  s.gName == shifts[0].gName) 
+                                                                  s.gName == GraphiName) 
                                                       .Sum(s => (s.ShiftLengthDay)/(s.ShiftsDay));
                             totalHours += shiftHoursSum;
                             
@@ -602,51 +602,45 @@ namespace GraphiGenius.MVVM.ViewModel
 
                 // Wypełnij tabelę zakresami godzinowymi zmian
 
-                double endh = 0;
-                double endm = 0;
+                
 
+                // Wypełnij tabelę zakresami godzinowymi zmian
                 for (int shiftIndex = 0; shiftIndex < 3; shiftIndex++)
                 {
                     tableBuilder.AppendLine("<tr>");
                     tableBuilder.AppendLine("<th class='shift-header'>Zmiana " + (shiftIndex + 1) + "</th>");
 
-                    double starth = department.DepartmentSh + endh;
-                    double startm = department.DepartmentSm + endm;
-                    endh = endh + department.DepartmentWt;
                     for (int dayIndex = 0; dayIndex < 7; dayIndex++)
                     {
                         int correctedDayIndex = (dayIndex + 1) % 7;
+
                         Shift shift = shifts.FirstOrDefault(s => s.DepartmentId == department.DepartmentId &&
-                                                                                          s.DaysId == correctedDayIndex &&
-                                                                                          s.IndexOfShift == shiftIndex);
-                        // Poprawka: Zmieniamy indeksy dni tygodnia, aby rozpoczynały się od niedzieli (0 - niedziela, 1 - poniedziałek, itd.)
-                        /*
-                                                Shift shift = shifts.FirstOrDefault(s => s.DepartmentId == department.DepartmentId &&
-                                                                                          s.DaysId == correctedDayIndex  &&
-                                                                                          s.IndexOfShift == shiftIndex);
-
-                                                string shiftHours = shift != null ? shift.StartHourDay.ToString("00") + ":" + shift.StartMinuteDay.ToString("00") + " - " +
-                                                                                   shift.EndHourDay.ToString("00") + ":" + shift.EndMinuteDay.ToString("00") : "";
-                        */
-
+                                                                 s.DaysId == correctedDayIndex &&
+                                                                 s.gName == GraphiName &&
+                                                                 s.IndexOfShift == shiftIndex);
+                        
                         if (shift != null)
                         {
+                            double DepartmentWt = (shift.ShiftLengthDay) / (shift.ShiftsDay);
+                            double starth = shift.StartHourDay + (DepartmentWt * shiftIndex);
+                            double startm = shift.StartMinuteDay;
+
+                            double endh = starth + DepartmentWt;
+                            double endm = shift.StartMinuteDay;
 
                             string shiftHours = starth.ToString("00") + ":" + startm.ToString("00") + " - " +
-                                                                endh.ToString("00") + ":" + endm.ToString("00");
+                                                endh.ToString("00") + ":" + endm.ToString("00");
                             tableBuilder.AppendLine("<td class='shift-hours'>" + shiftHours + "</td>");
                         }
                         else
                         {
-
-
-
                             tableBuilder.AppendLine("<td class='shift-hours'></td>");
                         }
                     }
 
                     tableBuilder.AppendLine("</tr>");
                 }
+
 
                 tableBuilder.AppendLine("</table>");
             }
@@ -659,10 +653,10 @@ namespace GraphiGenius.MVVM.ViewModel
 
         {
             int year = Convert.ToInt32(GenerateYearForm);
-           // await _generateshift.generate_shift(GraphiName, MonthNumber, year);
+            await _generateshift.generate_shift(GraphiName, MonthNumber, year);
 
             ShiftDatabaseAccess shiftDatabaseAccess = new ShiftDatabaseAccess();
-            List<Shift> shifts = shiftDatabaseAccess.loadShifts();
+            List<Shift> shifts = shiftDatabaseAccess.loadShifts(GraphiName);
 
             string generatehtml = @"<!DOCTYPE html>
                                 <html lang=""pl"">
@@ -912,7 +906,7 @@ namespace GraphiGenius.MVVM.ViewModel
                                     <main>
                                         
                                         <div id=""board"">
-                                            " + GenerateScheduleTable(shifts) + @"
+                                            " + GenerateScheduleTable(shifts, GraphiName) + @"
                                         </div>
                                         
                                     </main>
