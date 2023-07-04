@@ -29,18 +29,20 @@ namespace GraphiGenius.MVVM.Model
         public string DepartmentName { get; set; }
         public int IndexOfShift { get; set; }
         public int DayInMonth { get; set; }
+        public int DaysId { get; set; }
         public double ShiftLengthDay { get; set; }
         public int StartHourDay { get; set; }
         public int StartMinuteDay { get; set; }
         public int EndHourDay { get; set; }
         public int EndMinuteDay { get; set; }
         public int ShiftsDay { get; set; }
+        public string gName { get; set; }
 
         //Only for adding to DB
         public int GraphId { get; set; }
         public int DayId { get; set; }
 
 
-        
+
     }
 }
